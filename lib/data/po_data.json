@@ -1,0 +1,104 @@
+{
+  "data": [
+    {
+      "index": 1,
+      "documentCode": "POWIN2993872",
+      "sku": "1000627",
+      "qty": 10,
+      "uom": "CAI",
+      "location": "LA.01",
+      "requestType": "PO",
+      "actual_receive": ""
+    },
+    {
+      "index": 2,
+      "documentCode": "POWIN8837643",
+      "sku": "1000689",
+      "qty": 7,
+      "uom": "LON",
+      "location": "LA.02",
+      "requestType": "PO",
+      "actual_receive": ""
+    },
+    {
+      "index": 3,
+      "documentCode": "POWIN7746538",
+      "sku": "1000886",
+      "qty": 4,
+      "uom": "CAI",
+      "location": "LA.03",
+      "requestType": "PO",
+      "actual_receive": ""
+    },
+    {
+      "index": 4,
+      "documentCode": "POWIN8227365",
+      "sku": "1000896",
+      "qty": 8,
+      "uom": "KG",
+      "location": "LA.04",
+      "requestType": "PO",
+      "actual_receive": ""
+    },
+    {
+      "index": 5,
+      "documentCode": "POWIN8857647",
+      "sku": "1000885",
+      "qty": 9,
+      "uom": "CAN",
+      "location": "LA.05",
+      "requestType": "PO",
+      "actual_receive": ""
+    },
+    {
+      "index": 6,
+      "documentCode": "SOWIN2993872",
+      "sku": "1000627",
+      "qty": 10,
+      "uom": "CAI",
+      "location": "LA.06",
+      "requestType": "SO",
+      "actual_receive": ""
+    },
+    {
+      "index": 7,
+      "documentCode": "SOWIN8837643",
+      "sku": "1000689",
+      "qty": 7,
+      "uom": "LON",
+      "location": "LA.07",
+      "requestType": "SO",
+      "actual_receive": ""
+    },
+    {
+      "index": 8,
+      "documentCode": "SOWIN7746538",
+      "sku": "1000886",
+      "qty": 4,
+      "uom": "CAI",
+      "location": "LA.08",
+      "requestType": "SO",
+      "actual_receive": ""
+    },
+    {
+      "index": 9,
+      "documentCode": "SOWIN8227365",
+      "sku": "1000896",
+      "qty": 8,
+      "uom": "KG",
+      "location": "LA.09",
+      "requestType": "SO",
+      "actual_receive": ""
+    },
+    {
+      "index": 10,
+      "documentCode": "SOWIN8857647",
+      "sku": "1000885",
+      "qty": 9,
+      "uom": "CAN",
+      "location": "LA.10",
+      "requestType": "SO",
+      "actual_receive": ""
+    }
+  ]
+}
