@@ -2,5 +2,6 @@
   "welcome_to_reorder": "welcome_to_reorder",
   "import_and_export_good": "Import and Export Good",
   "manage_pallet": "Manage Pallet",
-  "manage_location": "Manage location"
+  "manage_location": "Manage location",
+  "edit": "Edit"
 }

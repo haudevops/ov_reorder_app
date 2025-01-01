@@ -42,7 +42,7 @@ class _HomeViewState extends State<HomeView> {
                 borderRadius: BorderRadius.circular(8)
               ),
               child: ListTile(
-                title: Text(S.current.manage_pallet),
+                title: Text(S.current.import_and_export_good),
                 onTap: () {
                   onItemTapped(1);
                 },

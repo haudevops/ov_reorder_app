@@ -17,6 +17,8 @@ class ImportGoodView extends StatefulWidget {
 
 class _ImportGoodViewState extends State<ImportGoodView> {
   POCodeMode? poCodeMode;
+  bool selected = false;
+  int rowDataLength = 0;
 
   @override
   void initState() {
@@ -32,77 +34,164 @@ class _ImportGoodViewState extends State<ImportGoodView> {
     setState(() {
       poCodeMode = POCodeMode.fromJson(jsonMap);
     });
+
+    for (final i in poCodeMode!.poCodeEntity!) {
+      rowDataLength = rowDataLength + 1;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          padding: EdgeInsets.all(8),
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                child: Text(
-                  S.current.import_and_export_good,
-                  style: TextStyle(
+        width: double.infinity,
+        height: double.infinity,
+        padding: EdgeInsets.all(8),
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    S.current.import_and_export_good,
+                    style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.w700,
-                      fontSize: 20),
-                ),
+                      fontSize: 20,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        selected = !selected;
+                      });
+                    },
+                    child: Text(S.current.edit),
+                  ),
+                ],
               ),
-              Container(
-                width: double.infinity,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      topLeft: Radius.circular(8)),
-                  color: Colors.purple[50],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Center(child: Text("STT"),),
+            ),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Stack(
+                      children: [
+                        AnimatedPositioned(
+                          duration: Duration(seconds: 1),
+                          curve: Curves.easeInCubic,
+                          top: 0,
+                          bottom: 0,
+                          left: 0,
+                          right: selected ? 20 : 0,
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            children: [
+                              Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(8),
+                                    topLeft: Radius.circular(8),
+                                  ),
+                                  color: Colors.purple[50],
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Center(child: Text("STT")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(child: Text("Ma PO")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(child: Text("SKU")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(child: Text("QTY")),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Center(child: Text("ĐVT")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(child: Text("LOCATION")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child:
+                                          Center(child: Text("ACTUAL RECEIVE")),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              poCodeMode != null
+                                  ? ReOrderAbleWidget(poCodeMode: poCodeMode!)
+                                  : Center(child: CircularProgressIndicator()),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Center(child: Text("Ma PO"),),
+                  ),
+                  SizedBox(
+                    width: selected ? 300 : 0,
+                    height: selected ? 200 : 0,
+                    child: Stack(
+                      children: [
+                        AnimatedPositioned(
+                          duration: Duration(seconds: 1),
+                          curve: Curves.easeInCubic,
+                          top: 0,
+                          bottom: 0,
+                          left: selected ? 10 : 0,
+                          right: 0,
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 500),
+                            opacity: selected ? 1.0 : 0.0,
+                            child: Container(
+                              width: selected ? 300 : 0,
+                              height: selected ? 200 : 0,
+                              color: Colors.blue,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 30,
+                                    color: Colors.orange,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [],
+                                    ),
+                                  )
+                                ],
+                              )
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Center(child: Text("SKU"),),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Center(child: Text("QTY"),),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Center(child: Text("ĐVT"),),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Center(child: Text("LOCATION"),),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Center(child: Text("ACTUAL RECEIVE"),),
-                    ),
-                  ],
-                ),
+                  ),
+
+                ],
               ),
-              poCodeMode != null ? Expanded(
-                child: ReOrderAbleWidget(poCodeMode: poCodeMode!)
-              ) : Center(child: const CircularProgressIndicator())
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -128,7 +217,9 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget> {
   @override
   Widget build(BuildContext context) {
     final List<Container> recordContainer = <Container>[
-      for (int index = 0; index < widget.poCodeMode.poCodeEntity!.length; index += 1)
+      for (int index = 0;
+          index < widget.poCodeMode.poCodeEntity!.length;
+          index += 1)
         Container(
           key: Key('$index'),
           color: Colors.white,
@@ -140,31 +231,51 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Center(child: Text("${index + 1}"),),
+                    child: Center(
+                      child: Text("${index + 1}"),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Center(child: Text("${widget.poCodeMode.poCodeEntity?[index].documentCode}"),),
+                    child: Center(
+                      child: Text(
+                          "${widget.poCodeMode.poCodeEntity?[index].documentCode}"),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Center(child: Text("${widget.poCodeMode.poCodeEntity?[index].sku}"),),
+                    child: Center(
+                      child:
+                          Text("${widget.poCodeMode.poCodeEntity?[index].sku}"),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Center(child: Text("${widget.poCodeMode.poCodeEntity?[index].qty}"),),
+                    child: Center(
+                      child:
+                          Text("${widget.poCodeMode.poCodeEntity?[index].qty}"),
+                    ),
                   ),
                   Expanded(
                     flex: 1,
-                    child: Center(child: Text("${widget.poCodeMode.poCodeEntity?[index].uom}"),),
+                    child: Center(
+                      child:
+                          Text("${widget.poCodeMode.poCodeEntity?[index].uom}"),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Center(child: Text("${widget.poCodeMode.poCodeEntity?[index].location}"),),
+                    child: Center(
+                      child: Text(
+                          "${widget.poCodeMode.poCodeEntity?[index].location}"),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Center(child: Text("${widget.poCodeMode.poCodeEntity?[index].actualReceive}"),),
+                    child: Center(
+                      child: Text(
+                          "${widget.poCodeMode.poCodeEntity?[index].actualReceive}"),
+                    ),
                   ),
                 ],
               ),
@@ -205,7 +316,8 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget> {
           if (oldIndex < newIndex) {
             newIndex -= 1;
           }
-          final POCodeEntity item = widget.poCodeMode.poCodeEntity!.removeAt(oldIndex);
+          final POCodeEntity item =
+              widget.poCodeMode.poCodeEntity!.removeAt(oldIndex);
           widget.poCodeMode.poCodeEntity!.insert(newIndex, item);
         });
       },
