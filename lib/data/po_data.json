@@ -8,6 +8,7 @@
       "uom": "CAI",
       "location": "LA.01",
       "requestType": "PO",
+      "status": "Urgent",
       "actual_receive": ""
     },
     {
@@ -18,6 +19,7 @@
       "uom": "LON",
       "location": "LA.02",
       "requestType": "PO",
+      "status": "Pending",
       "actual_receive": ""
     },
     {
@@ -28,6 +30,7 @@
       "uom": "CAI",
       "location": "LA.03",
       "requestType": "PO",
+      "status": "New",
       "actual_receive": ""
     },
     {
@@ -38,6 +41,7 @@
       "uom": "KG",
       "location": "LA.04",
       "requestType": "PO",
+      "status": "New",
       "actual_receive": ""
     },
     {
@@ -48,6 +52,7 @@
       "uom": "CAN",
       "location": "LA.05",
       "requestType": "PO",
+      "status": "New",
       "actual_receive": ""
     },
     {
@@ -58,6 +63,7 @@
       "uom": "CAI",
       "location": "LA.06",
       "requestType": "SO",
+      "status": "Urgent",
       "actual_receive": ""
     },
     {
@@ -68,6 +74,7 @@
       "uom": "LON",
       "location": "LA.07",
       "requestType": "SO",
+      "status": "Pending",
       "actual_receive": ""
     },
     {
@@ -78,6 +85,7 @@
       "uom": "CAI",
       "location": "LA.08",
       "requestType": "SO",
+      "status": "New",
       "actual_receive": ""
     },
     {
@@ -88,6 +96,7 @@
       "uom": "KG",
       "location": "LA.09",
       "requestType": "SO",
+      "status": "New",
       "actual_receive": ""
     },
     {
@@ -98,6 +107,7 @@
       "uom": "CAN",
       "location": "LA.10",
       "requestType": "SO",
+      "status": "New",
       "actual_receive": ""
     }
   ]

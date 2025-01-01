@@ -26,6 +26,7 @@ class POCodeEntity {
       this.requestType,
       this.uom,
       this.actualReceive,
+      this.status,
       this.location});
 
   factory POCodeEntity.fromJson(Map<String, dynamic> json) {
@@ -36,6 +37,7 @@ class POCodeEntity {
         qty: json['qty'],
         uom: json['uom'],
         requestType: json['requestType'],
+        status: json['status'],
         actualReceive: json['actualReceive'] ?? "",
         location: json['location']);
   }
@@ -50,6 +52,7 @@ class POCodeEntity {
       'requestType': requestType,
       'actualReceive': actualReceive,
       'location': location,
+      'status': status,
     };
   }
 
@@ -61,4 +64,5 @@ class POCodeEntity {
   String? requestType;
   String? actualReceive;
   String? location;
+  String? status;
 }
