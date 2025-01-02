@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reorder_app/generated/l10n.dart';
 import 'package:reorder_app/models/models.dart';
-import 'package:reorder_app/utils/constants.dart';
 
 class ImportGoodView extends StatefulWidget {
   const ImportGoodView({super.key});
@@ -55,6 +54,22 @@ class _ImportGoodViewState extends State<ImportGoodView> {
           children: [
             Row(
               children: [
+                GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Container(
+                    width: 50,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.blue[100],
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Center(
+                      child: Icon(Icons.menu, color: Colors.blue),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 5),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -107,13 +122,22 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                   ),
                 ),
                 const Spacer(),
-                TextButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     setState(() {
                       selected = !selected;
                     });
                   },
-                  child: Text(S.current.edit),
+                  child: Container(
+                    width: 200,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.blue[100],
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Center(
+                      child: Text(S.current.edit),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -163,7 +187,11 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                     ),
                                     Expanded(
                                       flex: 2,
-                                      child: Center(child: Text("QTY")),
+                                      child: Center(child: Text("QTY PLAN")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(child: Text("QTY ACTUAL")),
                                     ),
                                     Expanded(
                                       flex: 1,
@@ -648,14 +676,12 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
   }
 
   void initController() {
-    // Khởi tạo danh sách các AnimationController và Animation cho mỗi item
     for (int i = 0; i < 3; i++) {
       var controller = AnimationController(
         vsync: this,
         duration: Duration(seconds: 1),
       )..repeat(reverse: true);
 
-      // Lưu controller vào danh sách
       listController.add(controller);
     }
 
@@ -673,6 +699,27 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
         end: Colors.white,
       ).animate(listController[2])
     ]);
+  }
+
+  Widget buildStatusWidget(int index) {
+    String statusText;
+    Color textColor;
+
+    if (index == 0) {
+      statusText = 'URGENT';
+      textColor = Colors.red;
+    } else if (index == 1) {
+      statusText = 'PENDING';
+      textColor = Colors.yellow[700]!;
+    } else {
+      statusText = 'NEW';
+      textColor = Colors.green;
+    }
+
+    return Text(
+      statusText,
+      style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+    );
   }
 
   void _showQuantityDialog({POCodeEntity? poCodeEntity}) {
@@ -695,14 +742,13 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
             controller: controller,
             autofocus: true,
             keyboardType: TextInputType.number,
-            // Hiển thị bàn phím số
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Nhập số lượng',
             ),
             onSubmitted: (value) {
               setState(() {
-                poCodeEntity?.actualReceive = value;
+                poCodeEntity?.qty_actual = int.parse(value) ?? 0;
               });
               Navigator.of(context).pop();
             },
@@ -710,16 +756,40 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pop();
               },
               child: Text('Hủy'),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
-                  poCodeEntity?.actualReceive = controller.text; // Lấy số lượng
+                  setState(() {
+                    final qty = poCodeEntity?.qty;
+                    final inputqty_actual = poCodeEntity?.qty_actual =
+                        int.parse(controller.text) ?? 0;
+                    if (inputqty_actual != null && inputqty_actual >= qty!) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Cảnh báo"),
+                            content: Text(
+                                "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Đóng"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  });
                 });
-                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pop();
               },
               child: Text('Xác nhận'),
             ),
@@ -769,6 +839,16 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     child: Center(
                       child: Text(
                         "${widget.poCodeMode.poCodeEntity?[index].qty}",
+                        style: TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        "${widget.poCodeMode.poCodeEntity?[index].qty_actual}",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w700),
                       ),
@@ -831,60 +911,92 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                   Expanded(
                     flex: 1,
                     child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].status}",
-                        style: TextStyle(
-                            color: Constants.statusColor[
-                                widget.poCodeMode.poCodeEntity?[index].status],
-                            fontWeight: FontWeight.w700),
-                      ),
+                      child: buildStatusWidget(index),
                     ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: widget.poCodeMode.poCodeEntity?[index]
-                                    .actualReceive !=
-                                null &&
-                            widget.poCodeMode.poCodeEntity![index]
-                                .actualReceive!.isNotEmpty
-                        ? Center(
-                            child: Text(
-                              widget.poCodeMode.poCodeEntity?[index]
-                                      .actualReceive ??
-                                  '',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          )
-                        : DragTarget(
-                            onAcceptWithDetails: (data) {
-                              if (data.data == 'Input qty') {
-                                _showQuantityDialog(
-                                    poCodeEntity:
-                                        widget.poCodeMode.poCodeEntity?[index]);
-                              }
-                            },
-                            builder: (context, candidateData, rejectData) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _showQuantityDialog(
-                                      poCodeEntity: widget
-                                          .poCodeMode.poCodeEntity?[index]);
-                                },
-                                child: Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.grey)),
-                                  child: Center(
-                                    child: Text("Quick Action"),
+                    child: DragTarget(
+                      onAcceptWithDetails: (data) {
+                        if (data.data == 'Input qty') {
+                          _showQuantityDialog(
+                              poCodeEntity:
+                                  widget.poCodeMode.poCodeEntity?[index]);
+                        }
+                      },
+                      builder: (context, candidateData, rejectData) {
+                        return Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(50),
+                                border:
+                                    Border.all(color: Colors.blue, width: 0.5)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        int qtyActual = widget
+                                                .poCodeMode
+                                                .poCodeEntity?[index]
+                                                .qty_actual ??
+                                            0;
+                                        int qty = widget.poCodeMode
+                                                .poCodeEntity?[index].qty ??
+                                            0;
+
+                                        widget.poCodeMode.poCodeEntity?[index]
+                                                .qty_actual =
+                                            (widget.poCodeMode
+                                                .poCodeEntity?[index].qty);
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.arrow_back,
+                                      size: 24,
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
+                                VerticalDivider(
+                                  color: Colors.blue,
+                                  width: 0.5,
+                                ),
+                                Expanded(
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.production_quantity_limits,
+                                      size: 24,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                                VerticalDivider(
+                                  color: Colors.blue,
+                                  width: 0.5,
+                                ),
+                                Expanded(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _showQuantityDialog(
+                                          poCodeEntity: widget
+                                              .poCodeMode.poCodeEntity?[index]);
+                                    },
+                                    icon: Icon(
+                                      Icons.edit_note,
+                                      size: 24,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ));
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -903,8 +1015,6 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
           final double scale = lerpDouble(1, 1.02, animValue)!;
           return Transform.scale(
             scale: scale,
-            // Create a Card based on the color and the content of the dragged one
-            // and set its elevation to the animated value.
             child: Card(
               elevation: elevation,
               color: Colors.deepPurpleAccent[50],
@@ -968,14 +1078,12 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
   }
 
   void initController() {
-    // Khởi tạo danh sách các AnimationController và Animation cho mỗi item
     for (int i = 0; i < 3; i++) {
       var controller = AnimationController(
         vsync: this,
         duration: Duration(seconds: 1),
       )..repeat(reverse: true);
 
-      // Lưu controller vào danh sách
       listController.add(controller);
     }
 
@@ -993,6 +1101,27 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
         end: Colors.white,
       ).animate(listController[2])
     ]);
+  }
+
+  Widget buildStatusWidget(int index) {
+    String statusText;
+    Color textColor;
+
+    if (index == 0) {
+      statusText = 'URGENT';
+      textColor = Colors.red;
+    } else if (index == 1) {
+      statusText = 'PENDING';
+      textColor = Colors.yellow[700]!;
+    } else {
+      statusText = 'NEW';
+      textColor = Colors.green;
+    }
+
+    return Text(
+      statusText,
+      style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+    );
   }
 
   void _showQuantityDialog({POCodeEntity? poCodeEntity}) {
@@ -1015,14 +1144,13 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
             controller: controller,
             autofocus: true,
             keyboardType: TextInputType.number,
-            // Hiển thị bàn phím số
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Nhập số lượng',
             ),
             onSubmitted: (value) {
               setState(() {
-                poCodeEntity?.actualReceive = value;
+                poCodeEntity?.qty_actual = int.parse(value) ?? 0;
               });
               Navigator.of(context).pop();
             },
@@ -1030,16 +1158,40 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pop();
               },
               child: Text('Hủy'),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
-                  poCodeEntity?.actualReceive = controller.text; // Lấy số lượng
+                  setState(() {
+                    final qty = poCodeEntity?.qty;
+                    final inputqty_actual = poCodeEntity?.qty_actual =
+                        int.parse(controller.text) ?? 0;
+                    if (inputqty_actual != null && inputqty_actual >= qty!) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Cảnh báo"),
+                            content: Text(
+                                "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Đóng"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  });
                 });
-                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pop();
               },
               child: Text('Xác nhận'),
             ),
@@ -1089,6 +1241,16 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                     child: Center(
                       child: Text(
                         "${widget.poCodeMode.poCodeEntity?[index].qty}",
+                        style: TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        "${widget.poCodeMode.poCodeEntity?[index].qty_actual}",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w700),
                       ),
@@ -1151,60 +1313,92 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                   Expanded(
                     flex: 1,
                     child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].status}",
-                        style: TextStyle(
-                            color: Constants.statusColor[
-                                widget.poCodeMode.poCodeEntity?[index].status],
-                            fontWeight: FontWeight.w700),
-                      ),
+                      child: buildStatusWidget(index),
                     ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: widget.poCodeMode.poCodeEntity?[index]
-                                    .actualReceive !=
-                                null &&
-                            widget.poCodeMode.poCodeEntity![index]
-                                .actualReceive!.isNotEmpty
-                        ? Center(
-                            child: Text(
-                              widget.poCodeMode.poCodeEntity?[index]
-                                      .actualReceive ??
-                                  '',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          )
-                        : DragTarget(
-                            onAcceptWithDetails: (data) {
-                              if (data.data == 'Input qty') {
-                                _showQuantityDialog(
-                                    poCodeEntity:
-                                        widget.poCodeMode.poCodeEntity?[index]);
-                              }
-                            },
-                            builder: (context, candidateData, rejectData) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _showQuantityDialog(
-                                      poCodeEntity: widget
-                                          .poCodeMode.poCodeEntity?[index]);
-                                },
-                                child: Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.grey)),
-                                  child: Center(
-                                    child: Text("Quick Action"),
+                    child: DragTarget(
+                      onAcceptWithDetails: (data) {
+                        if (data.data == 'Input qty') {
+                          _showQuantityDialog(
+                              poCodeEntity:
+                                  widget.poCodeMode.poCodeEntity?[index]);
+                        }
+                      },
+                      builder: (context, candidateData, rejectData) {
+                        return Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(50),
+                                border:
+                                    Border.all(color: Colors.blue, width: 0.5)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        int qtyActual = widget
+                                                .poCodeMode
+                                                .poCodeEntity?[index]
+                                                .qty_actual ??
+                                            0;
+                                        int qty = widget.poCodeMode
+                                                .poCodeEntity?[index].qty ??
+                                            0;
+
+                                        widget.poCodeMode.poCodeEntity?[index]
+                                                .qty_actual =
+                                            (widget.poCodeMode
+                                                .poCodeEntity?[index].qty);
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.arrow_back,
+                                      size: 24,
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
+                                VerticalDivider(
+                                  color: Colors.blue,
+                                  width: 0.5,
+                                ),
+                                Expanded(
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.production_quantity_limits,
+                                      size: 24,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                                VerticalDivider(
+                                  color: Colors.blue,
+                                  width: 0.5,
+                                ),
+                                Expanded(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _showQuantityDialog(
+                                          poCodeEntity: widget
+                                              .poCodeMode.poCodeEntity?[index]);
+                                    },
+                                    icon: Icon(
+                                      Icons.edit_note,
+                                      size: 24,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ));
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -1223,8 +1417,6 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
           final double scale = lerpDouble(1, 1.02, animValue)!;
           return Transform.scale(
             scale: scale,
-            // Create a Card based on the color and the content of the dragged one
-            // and set its elevation to the animated value.
             child: Card(
               elevation: elevation,
               color: Colors.deepPurpleAccent[50],

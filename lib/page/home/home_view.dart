@@ -25,64 +25,54 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 5,
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          children: [
-            DrawerHeader(child: WidgetConstant.infoUser()),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.blue[100],
-                borderRadius: BorderRadius.circular(8)
+        // appBar: AppBar(
+        //   backgroundColor: Colors.white,
+        //   iconTheme: IconThemeData(color: Colors.black),
+        //   elevation: 5,
+        // ),
+        drawer: Drawer(
+          backgroundColor: Colors.white,
+          child: ListView(
+            children: [
+              DrawerHeader(child: WidgetConstant.infoUser()),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                    color: Colors.blue[100],
+                    borderRadius: BorderRadius.circular(8)),
+                child: ListTile(
+                  title: Text(S.current.import_and_export_good),
+                  onTap: () {
+                    onItemTapped(1);
+                  },
+                ),
               ),
-              child: ListTile(
-                title: Text(S.current.import_and_export_good),
-                onTap: () {
-                  onItemTapped(1);
-                },
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                    color: Colors.blue[100],
+                    borderRadius: BorderRadius.circular(8)),
+                child: ListTile(
+                  title: Text(S.current.manage_location),
+                  onTap: () {
+                    onItemTapped(2);
+                  },
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(8)
-              ),
-              child: ListTile(
-                title: Text(S.current.manage_location),
-                onTap: () {
-                  onItemTapped(2);
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      body: renderBody(selectedIndex)
-    );
+        body: renderBody(selectedIndex));
   }
 
   Widget renderBody(int index) {
-    switch(index) {
+    switch (index) {
       case 1:
         return ImportGoodView();
       case 2:
         return ExportGoodView();
       default:
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.white,
-          child: Center(
-            child: Text(S.current.welcome_to_reorder.toUpperCase(), style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),),
-          ),
-        );
+        return ImportGoodView();
     }
   }
 }
