@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:reorder_app/generated/l10n.dart';
 import 'package:reorder_app/models/models.dart';
 
 class ImportGoodView extends StatefulWidget {
@@ -117,24 +116,6 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     ),
                   ),
                 ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selected = !selected;
-                    });
-                  },
-                  child: Container(
-                    width: 200,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child: Text(S.current.edit),
-                    ),
-                  ),
-                ),
               ],
             ),
             SizedBox(height: 10),
@@ -212,9 +193,21 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                               poCodeMode != null
                                   ? switchButton == 1
                                       ? ReOrderAbleWidget(
-                                          poCodeMode: poCodeMode!)
+                                          poCodeMode: poCodeMode!,
+                                          onSelectedChange: () {
+                                            setState(() {
+                                              selected = !selected;
+                                            });
+                                          },
+                                        )
                                       : ReOrderAbleExportWidget(
-                                          poCodeMode: poCodeMode!)
+                                          poCodeMode: poCodeMode!,
+                                          onSelectedChange: () {
+                                            setState(() {
+                                              selected = !selected;
+                                            });
+                                          },
+                                        )
                                   : Center(child: CircularProgressIndicator()),
                             ],
                           ),
@@ -252,12 +245,12 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                             MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                        children: [
-                                          Text('Actual Receive'),
-                                          TextButton(
-                                              onPressed: () {},
-                                              child: Text('Save'))
-                                        ],
+                                        // children: [
+                                        //   Text('Actual Receive'),
+                                        //   TextButton(
+                                        //       onPressed: () {},
+                                        //       child: Text('Save'))
+                                        // ],
                                       ),
                                     ),
                                     Container(
@@ -642,9 +635,11 @@ class _ImportGoodViewState extends State<ImportGoodView> {
 }
 
 class ReOrderAbleWidget extends StatefulWidget {
-  const ReOrderAbleWidget({super.key, required this.poCodeMode});
+  const ReOrderAbleWidget(
+      {super.key, required this.poCodeMode, required this.onSelectedChange});
 
   final POCodeMode poCodeMode;
+  final Function onSelectedChange;
 
   @override
   State<ReOrderAbleWidget> createState() => _ReOrderAbleWidgetState();
@@ -807,187 +802,221 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
           child: ReorderableDragStartListener(
             index: index,
             child: ListTile(
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text("${index + 1}"),
+              contentPadding: EdgeInsets.zero,
+              title: TextButton(
+                onHover: (isHovering) {
+                  setState(() {
+                    if (isHovering) {
+                      widget.onSelectedChange();
+                    } else {
+                      // Revert to default background color
+                      Colors.grey;
+                    }
+                  });
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    side: BorderSide(
+                      color: Colors.white,
+                      width: MediaQuery.of(context).size.width * 1,
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                          "${widget.poCodeMode.poCodeEntity?[index].documentCode}"),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
-                        overflow: TextOverflow.ellipsis,
+                ),
+                onPressed: () {
+                  setState(() {
+                    widget.onSelectedChange();
+                  });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          widget.onSelectedChange();
+                        },
+                        child: Text('save')),
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Text("${index + 1}"),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qty}",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w700),
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Text(
+                            "${widget.poCodeMode.poCodeEntity?[index].documentCode}"),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w700),
+                    Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child:
-                          Text("${widget.poCodeMode.poCodeEntity?[index].uom}"),
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Text(
+                          "${widget.poCodeMode.poCodeEntity?[index].qty}",
+                          style: TextStyle(
+                              color: Colors.blue, fontWeight: FontWeight.w700),
+                        ),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: DragTarget(
-                      onAcceptWithDetails: (data) {
-                        setState(() {
-                          widget.poCodeMode.poCodeEntity?[index].location =
-                              data.data.toString();
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                  'Đã thay đổi Location: ${data.data.toString()}')),
-                        );
-                      },
-                      builder: (context, candidateData, rejectData) {
-                        return (index == 0 || index == 1 || index == 2)
-                            ? AnimatedBuilder(
-                                animation: colorAnimation[index],
-                                builder: (context, child) {
-                                  return Container(
-                                    height: 50,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 30),
-                                    decoration: BoxDecoration(
-                                        color: colorAnimation[index].value,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Center(
-                                      child: Text(
-                                          "${widget.poCodeMode.poCodeEntity?[index].location}"),
-                                    ),
-                                  );
-                                },
-                              )
-                            : Container(
-                                height: 50,
-                                margin: EdgeInsets.symmetric(horizontal: 30),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Center(
-                                  child: Text(
-                                      "${widget.poCodeMode.poCodeEntity?[index].location}"),
-                                ),
-                              );
-                      },
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Text(
+                          "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
+                          style: TextStyle(
+                              color: Colors.blue, fontWeight: FontWeight.w700),
+                        ),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: buildStatusWidget(index),
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Text(
+                            "${widget.poCodeMode.poCodeEntity?[index].uom}"),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: DragTarget(
-                      onAcceptWithDetails: (data) {
-                        if (data.data == 'Input qty') {
-                          _showQuantityDialog(
-                              poCodeEntity:
-                                  widget.poCodeMode.poCodeEntity?[index]);
-                        }
-                      },
-                      builder: (context, candidateData, rejectData) {
-                        return Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(50),
-                                border:
-                                    Border.all(color: Colors.blue, width: 0.5)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        widget.poCodeMode.poCodeEntity?[index]
-                                                .qtyActual =
-                                            (widget.poCodeMode
-                                                .poCodeEntity?[index].qty);
-                                      });
-                                    },
-                                    icon: Icon(
-                                      Icons.arrow_back,
-                                      size: 24,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
-                                VerticalDivider(
-                                  color: Colors.blue,
-                                  width: 0.5,
-                                ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.production_quantity_limits,
-                                      size: 24,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
-                                VerticalDivider(
-                                  color: Colors.blue,
-                                  width: 0.5,
-                                ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      _showQuantityDialog(
-                                          poCodeEntity: widget
-                                              .poCodeMode.poCodeEntity?[index]);
-                                    },
-                                    icon: Icon(
-                                      Icons.edit_note,
-                                      size: 24,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
+                    Expanded(
+                      flex: 2,
+                      child: DragTarget(
+                        onAcceptWithDetails: (data) {
+                          setState(() {
+                            widget.poCodeMode.poCodeEntity?[index].location =
+                                data.data.toString();
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Đã thay đổi Location: ${data.data.toString()}')),
+                          );
+                        },
+                        builder: (context, candidateData, rejectData) {
+                          return (index == 0 || index == 1 || index == 2)
+                              ? AnimatedBuilder(
+                                  animation: colorAnimation[index],
+                                  builder: (context, child) {
+                                    return Container(
+                                      height: 50,
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 30),
+                                      decoration: BoxDecoration(
+                                          color: colorAnimation[index].value,
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Center(
+                                        child: Text(
+                                            "${widget.poCodeMode.poCodeEntity?[index].location}"),
+                                      ),
+                                    );
+                                  },
                                 )
-                              ],
-                            ));
-                      },
+                              : Container(
+                                  height: 50,
+                                  margin: EdgeInsets.symmetric(horizontal: 30),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Center(
+                                    child: Text(
+                                        "${widget.poCodeMode.poCodeEntity?[index].location}"),
+                                  ),
+                                );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: buildStatusWidget(index),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: DragTarget(
+                        onAcceptWithDetails: (data) {
+                          if (data.data == 'Input qty') {
+                            _showQuantityDialog(
+                                poCodeEntity:
+                                    widget.poCodeMode.poCodeEntity?[index]);
+                          }
+                        },
+                        builder: (context, candidateData, rejectData) {
+                          return Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                      color: Colors.blue, width: 0.5)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          widget.poCodeMode.poCodeEntity?[index]
+                                                  .qtyActual =
+                                              (widget.poCodeMode
+                                                  .poCodeEntity?[index].qty);
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back,
+                                        size: 24,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                  VerticalDivider(
+                                    color: Colors.blue,
+                                    width: 0.5,
+                                  ),
+                                  Expanded(
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.production_quantity_limits,
+                                        size: 24,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                  VerticalDivider(
+                                    color: Colors.blue,
+                                    width: 0.5,
+                                  ),
+                                  Expanded(
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _showQuantityDialog(
+                                            poCodeEntity: widget.poCodeMode
+                                                .poCodeEntity?[index]);
+                                      },
+                                      icon: Icon(
+                                        Icons.edit_note,
+                                        size: 24,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -1036,9 +1065,11 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
 }
 
 class ReOrderAbleExportWidget extends StatefulWidget {
-  const ReOrderAbleExportWidget({super.key, required this.poCodeMode});
+  const ReOrderAbleExportWidget(
+      {super.key, required this.poCodeMode, required this.onSelectedChange});
 
   final POCodeMode poCodeMode;
+  final Function onSelectedChange;
 
   @override
   State<ReOrderAbleExportWidget> createState() =>
@@ -1202,7 +1233,13 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
           child: ReorderableDragStartListener(
             index: index,
             child: ListTile(
-              title: Row(
+                title: TextButton(
+              onPressed: () {
+                setState(() {
+                  widget.onSelectedChange();
+                });
+              },
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
@@ -1382,7 +1419,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                   ),
                 ],
               ),
-            ),
+            )),
           ),
         ),
     ];
