@@ -78,14 +78,13 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     height: 40,
                     decoration: BoxDecoration(
                         color:
-                            switchButton == 1 ? Colors.blue[100] : Colors.grey,
+                            switchButton == 1 ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
                         "Nhập hàng".toUpperCase(),
                         style: TextStyle(
-                            color:
-                                switchButton == 1 ? Colors.blue : Colors.white,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -104,34 +103,15 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     height: 40,
                     decoration: BoxDecoration(
                         color:
-                            switchButton == 2 ? Colors.blue[50] : Colors.grey,
+                            switchButton == 2 ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
                         "Xuất hàng".toUpperCase(),
                         style: TextStyle(
-                            color:
-                                switchButton == 2 ? Colors.blue : Colors.white,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selected = !selected;
-                    });
-                  },
-                  child: Container(
-                    width: 200,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child: Text(S.current.edit),
                     ),
                   ),
                 ),
@@ -164,47 +144,46 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                     topRight: Radius.circular(8),
                                     topLeft: Radius.circular(8),
                                   ),
-                                  color: Colors.purple[50],
+                                  color: Colors.blue,
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
                                       flex: 1,
-                                      child: Center(child: Text("STT")),
+                                      child: textHeader("STT"),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Center(child: Text("Ma PO")),
+                                      child: textHeader("Ma PO"),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: textHeader("SKU"),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: textHeader("QTY PLAN"),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: textHeader("QTY ACTUAL"),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: textHeader("ĐVT"),
                                     ),
                                     Expanded(
                                       flex: 2,
-                                      child: Center(child: Text("SKU")),
+                                      child: textHeader("LOCATION"),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Center(child: Text("QTY PLAN")),
+                                      child: textHeader("STATUS"),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Center(child: Text("QTY ACTUAL")),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Center(child: Text("ĐVT")),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Center(child: Text("LOCATION")),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Center(child: Text("STATUS")),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child:
-                                          Center(child: Text("ACTUAL RECEIVE")),
+                                      child: textHeader("ACTUAL RECEIVE"),
                                     ),
                                   ],
                                 ),
@@ -222,6 +201,8 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                       ],
                     ),
                   ),
+
+                  // Container Edit
                   SizedBox(
                     width: selected ? 300 : 0,
                     height: selected ? 200 : 0,
@@ -639,6 +620,14 @@ class _ImportGoodViewState extends State<ImportGoodView> {
       ),
     );
   }
+
+  Widget textHeader(String title) {
+    return Center(
+        child: Text(
+      title,
+      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+    ));
+  }
 }
 
 class ReOrderAbleWidget extends StatefulWidget {
@@ -807,6 +796,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
           child: ReorderableDragStartListener(
             index: index,
             child: ListTile(
+              contentPadding: EdgeInsets.zero,
               title: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -820,16 +810,19 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     flex: 1,
                     child: Center(
                       child: Text(
-                          "${widget.poCodeMode.poCodeEntity?[index].documentCode}"),
+                        "${widget.poCodeMode.poCodeEntity?[index].documentCode}",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                   Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    flex: 3,
+                    child: Text(
+                      "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.orange, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Expanded(
@@ -913,79 +906,54 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     ),
                   ),
                   Expanded(
-                    flex: 2,
-                    child: DragTarget(
-                      onAcceptWithDetails: (data) {
-                        if (data.data == 'Input qty') {
-                          _showQuantityDialog(
-                              poCodeEntity:
-                                  widget.poCodeMode.poCodeEntity?[index]);
-                        }
-                      },
-                      builder: (context, candidateData, rejectData) {
-                        return Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(50),
-                                border:
-                                    Border.all(color: Colors.blue, width: 0.5)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        widget.poCodeMode.poCodeEntity?[index]
-                                                .qtyActual =
-                                            (widget.poCodeMode
-                                                .poCodeEntity?[index].qty);
-                                      });
-                                    },
-                                    icon: Icon(
-                                      Icons.arrow_back,
-                                      size: 24,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
-                                VerticalDivider(
+                    flex: 1,
+                    child: SizedBox(
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    widget.poCodeMode.poCodeEntity?[index]
+                                            .qtyActual =
+                                        (widget.poCodeMode.poCodeEntity?[index]
+                                            .qty);
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.arrow_back,
+                                  size: 18,
                                   color: Colors.blue,
-                                  width: 0.5,
                                 ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.production_quantity_limits,
-                                      size: 24,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
-                                VerticalDivider(
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.production_quantity_limits,
+                                  size: 18,
                                   color: Colors.blue,
-                                  width: 0.5,
                                 ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      _showQuantityDialog(
-                                          poCodeEntity: widget
-                                              .poCodeMode.poCodeEntity?[index]);
-                                    },
-                                    icon: Icon(
-                                      Icons.edit_note,
-                                      size: 24,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ));
-                      },
-                    ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showQuantityDialog(
+                                      poCodeEntity: widget
+                                          .poCodeMode.poCodeEntity?[index]);
+                                },
+                                child: Icon(
+                                  Icons.edit_note,
+                                  size: 18,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            )
+                          ],
+                        )),
                   ),
                 ],
               ),
