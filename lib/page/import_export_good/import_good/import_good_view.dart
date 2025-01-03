@@ -78,15 +78,13 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     width: 200,
                     height: 40,
                     decoration: BoxDecoration(
-                        color:
-                            switchButton == 1 ? Colors.blue : Colors.grey,
+                        color: switchButton == 1 ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
                         "Nhập hàng".toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
+                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -103,15 +101,13 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     width: 200,
                     height: 40,
                     decoration: BoxDecoration(
-                        color:
-                            switchButton == 2 ? Colors.blue : Colors.grey,
+                        color: switchButton == 2 ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
                         "Xuất hàng".toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
+                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -200,8 +196,8 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                           },
                                         )
                                       : ReOrderAbleExportWidget(
-                                          data: ScreenArguments(arg1: poCodeMode)
-                                        )
+                                          data:
+                                              ScreenArguments(arg1: poCodeMode))
                                   : Center(child: CircularProgressIndicator()),
                             ],
                           ),
@@ -719,7 +715,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
 
   void _showQuantityDialog({POCodeEntity? poCodeEntity}) {
     final TextEditingController controller = TextEditingController();
-
+    String? errorMessage;
     showDialog(
       context: context,
       builder: (context) {
@@ -733,20 +729,30 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
               ),
             ],
           ),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Nhập số lượng',
-            ),
-            onSubmitted: (value) {
-              setState(() {
-                poCodeEntity?.qtyActual = int.parse(value);
-              });
-              Navigator.of(context).pop();
-            },
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Nhập số lượng',
+                  fillColor: Colors.white30,
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 0.8),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  errorText: errorMessage,
+                ),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -758,35 +764,39 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
             TextButton(
               onPressed: () {
                 setState(() {
-                  setState(() {
-                    final qty = poCodeEntity?.qty;
-                    final inputQtyActual =
-                        poCodeEntity?.qtyActual = int.parse(controller.text);
-                    if (inputQtyActual != null && inputQtyActual >= qty!) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Cảnh báo"),
-                            content: Text(
-                                "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Đóng"),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  });
+                  final input = controller.text;
+                  final qty = poCodeEntity?.qty ?? 0;
+                  final inputQtyActual =
+                      poCodeEntity?.qtyActual = int.parse(controller.text);
+                  if (input.isEmpty) {
+                    errorMessage = 'Vui lòng nhập số lượng.';
+                    return;
+                  }
+
+                  if (inputQtyActual == null) {
+                    errorMessage = 'Vui lòng nhập một số nguyên hợp lệ.';
+                    return;
+                  }
+
+                  if (inputQtyActual > qty) {
+                    errorMessage =
+                        'Số lượng thực không được lớn hơn số lượng ban đầu (${qty}).';
+                    return;
+                  }
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Lưu số lượng thành công!'),
+                    ),
+                  );
+
+                  Navigator.of(context).pop();
                 });
-                Navigator.of(context).pop();
               },
-              child: Text('Xác nhận'),
+              child: Text(
+                'Xác nhận',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         );
@@ -803,171 +813,186 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
         Container(
           key: Key('$index'),
           color: Colors.white,
+          height: 68,
           child: ReorderableDragStartListener(
             index: index,
             child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text("${index + 1}"),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].documentCode}",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          color: Colors.orange, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qty}",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child:
-                          Text("${widget.poCodeMode.poCodeEntity?[index].uom}"),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: DragTarget(
-                      onAcceptWithDetails: (data) {
-                        setState(() {
-                          widget.poCodeMode.poCodeEntity?[index].location =
-                              data.data.toString();
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                  'Đã thay đổi Location: ${data.data.toString()}')),
-                        );
-                      },
-                      builder: (context, candidateData, rejectData) {
-                        return (index == 0 || index == 1 || index == 2)
-                            ? AnimatedBuilder(
-                                animation: colorAnimation[index],
-                                builder: (context, child) {
-                                  return Container(
-                                    height: 50,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 30),
-                                    decoration: BoxDecoration(
-                                        color: colorAnimation[index].value,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Center(
-                                      child: Text(
-                                          "${widget.poCodeMode.poCodeEntity?[index].location}"),
-                                    ),
-                                  );
-                                },
-                              )
-                            : Container(
-                                height: 50,
-                                margin: EdgeInsets.symmetric(horizontal: 30),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Center(
-                                  child: Text(
-                                      "${widget.poCodeMode.poCodeEntity?[index].location}"),
-                                ),
+                contentPadding: EdgeInsets.zero,
+                title: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text("${index + 1}"),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Center(
+                            child: Text(
+                              "${widget.poCodeMode.poCodeEntity?[index].documentCode}",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: Colors.orange,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text(
+                              "${widget.poCodeMode.poCodeEntity?[index].qty}",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text(
+                              "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text(
+                                "${widget.poCodeMode.poCodeEntity?[index].uom}"),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: DragTarget(
+                            onAcceptWithDetails: (data) {
+                              setState(() {
+                                widget.poCodeMode.poCodeEntity?[index]
+                                    .location = data.data.toString();
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'Đã thay đổi Location: ${data.data.toString()}')),
                               );
-                      },
+                            },
+                            builder: (context, candidateData, rejectData) {
+                              return (index == 0 || index == 1 || index == 2)
+                                  ? AnimatedBuilder(
+                                      animation: colorAnimation[index],
+                                      builder: (context, child) {
+                                        return Container(
+                                          height: 50,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 30),
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  colorAnimation[index].value,
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          child: Center(
+                                            child: Text(
+                                                "${widget.poCodeMode.poCodeEntity?[index].location}"),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Container(
+                                      height: 50,
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 30),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Center(
+                                        child: Text(
+                                            "${widget.poCodeMode.poCodeEntity?[index].location}"),
+                                      ),
+                                    );
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: buildStatusWidget(index),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: SizedBox(
+                              height: 40,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          widget.poCodeMode.poCodeEntity?[index]
+                                                  .qtyActual =
+                                              (widget.poCodeMode
+                                                  .poCodeEntity?[index].qty);
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        size: 18,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      child: Icon(
+                                        Icons.production_quantity_limits,
+                                        size: 18,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _showQuantityDialog(
+                                            poCodeEntity: widget.poCodeMode
+                                                .poCodeEntity?[index]);
+                                      },
+                                      child: Icon(
+                                        Icons.edit_note,
+                                        size: 18,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )),
+                        ),
+                      ],
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: buildStatusWidget(index),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: SizedBox(
-                        height: 40,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    widget.poCodeMode.poCodeEntity?[index]
-                                            .qtyActual =
-                                        (widget.poCodeMode.poCodeEntity?[index]
-                                            .qty);
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  size: 18,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.production_quantity_limits,
-                                  size: 18,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _showQuantityDialog(
-                                      poCodeEntity: widget
-                                          .poCodeMode.poCodeEntity?[index]);
-                                },
-                                child: Icon(
-                                  Icons.edit_note,
-                                  size: 18,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            )
-                          ],
-                        )),
-                  ),
-                ],
-              ),
-            ),
+                    Divider(
+                      thickness: 0.15,
+                      color: Colors.grey,
+                    )
+                  ],
+                )),
           ),
         ),
     ];
@@ -1012,4 +1037,3 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
     );
   }
 }
-
