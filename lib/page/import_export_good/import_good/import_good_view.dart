@@ -78,13 +78,14 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     height: 40,
                     decoration: BoxDecoration(
                         color:
-                            switchButton == 1 ? Colors.blue : Colors.grey,
+                            switchButton == 1 ? Colors.blue[100] : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
                         "Nhập hàng".toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
+                            color:
+                                switchButton == 1 ? Colors.blue : Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -103,15 +104,34 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                     height: 40,
                     decoration: BoxDecoration(
                         color:
-                            switchButton == 2 ? Colors.blue : Colors.grey,
+                            switchButton == 2 ? Colors.blue[50] : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
                         "Xuất hàng".toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
+                            color:
+                                switchButton == 2 ? Colors.blue : Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selected = !selected;
+                    });
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.blue[100],
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Center(
+                      child: Text(S.current.edit),
                     ),
                   ),
                 ),
@@ -144,46 +164,47 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                     topRight: Radius.circular(8),
                                     topLeft: Radius.circular(8),
                                   ),
-                                  color: Colors.blue,
+                                  color: Colors.purple[50],
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("STT"),
+                                      child: Center(child: Text("STT")),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("Ma PO"),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: textHeader("SKU"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("QTY PLAN"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("QTY ACTUAL"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("ĐVT"),
+                                      child: Center(child: Text("Ma PO")),
                                     ),
                                     Expanded(
                                       flex: 2,
-                                      child: textHeader("LOCATION"),
+                                      child: Center(child: Text("SKU")),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("STATUS"),
+                                      child: Center(child: Text("QTY PLAN")),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("ACTUAL RECEIVE"),
+                                      child: Center(child: Text("QTY ACTUAL")),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Center(child: Text("ĐVT")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(child: Text("LOCATION")),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Center(child: Text("STATUS")),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child:
+                                          Center(child: Text("ACTUAL RECEIVE")),
                                     ),
                                   ],
                                 ),
@@ -191,9 +212,21 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                               poCodeMode != null
                                   ? switchButton == 1
                                       ? ReOrderAbleWidget(
-                                          poCodeMode: poCodeMode!)
+                                          poCodeMode: poCodeMode!,
+                                          onSelectedChange: () {
+                                            setState(() {
+                                              selected = !selected;
+                                            });
+                                          },
+                                        )
                                       : ReOrderAbleExportWidget(
-                                          poCodeMode: poCodeMode!)
+                                          poCodeMode: poCodeMode!,
+                                          onSelectedChange: () {
+                                            setState(() {
+                                              selected = !selected;
+                                            });
+                                          },
+                                        )
                                   : Center(child: CircularProgressIndicator()),
                             ],
                           ),
@@ -233,12 +266,12 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                             MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                        children: [
-                                          Text('Actual Receive'),
-                                          TextButton(
-                                              onPressed: () {},
-                                              child: Text('Save'))
-                                        ],
+                                        // children: [
+                                        //   Text('Actual Receive'),
+                                        //   TextButton(
+                                        //       onPressed: () {},
+                                        //       child: Text('Save'))
+                                        // ],
                                       ),
                                     ),
                                     Container(
@@ -631,9 +664,11 @@ class _ImportGoodViewState extends State<ImportGoodView> {
 }
 
 class ReOrderAbleWidget extends StatefulWidget {
-  const ReOrderAbleWidget({super.key, required this.poCodeMode});
+  const ReOrderAbleWidget(
+      {super.key, required this.poCodeMode, required this.onSelectedChange});
 
   final POCodeMode poCodeMode;
+  final Function onSelectedChange;
 
   @override
   State<ReOrderAbleWidget> createState() => _ReOrderAbleWidgetState();
@@ -1004,9 +1039,11 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
 }
 
 class ReOrderAbleExportWidget extends StatefulWidget {
-  const ReOrderAbleExportWidget({super.key, required this.poCodeMode});
+  const ReOrderAbleExportWidget(
+      {super.key, required this.poCodeMode, required this.onSelectedChange});
 
   final POCodeMode poCodeMode;
+  final Function onSelectedChange;
 
   @override
   State<ReOrderAbleExportWidget> createState() =>
@@ -1170,7 +1207,13 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
           child: ReorderableDragStartListener(
             index: index,
             child: ListTile(
-              title: Row(
+                title: TextButton(
+              onPressed: () {
+                setState(() {
+                  widget.onSelectedChange();
+                });
+              },
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
@@ -1350,7 +1393,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                   ),
                 ],
               ),
-            ),
+            )),
           ),
         ),
     ];
