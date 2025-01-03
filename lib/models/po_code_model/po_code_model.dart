@@ -22,8 +22,9 @@ class POCodeEntity {
       {this.index,
       this.documentCode,
       this.sku,
+      this.skuName,
       this.qty,
-      this.qty_actual,
+      this.qtyActual,
       this.requestType,
       this.uom,
       this.actualReceive,
@@ -35,8 +36,9 @@ class POCodeEntity {
         index: json['index'],
         documentCode: json['documentCode'],
         sku: json['sku'],
+        skuName: json['skuName'],
         qty: json['qty'],
-        qty_actual: json['qty_actual'],
+        qtyActual: json['qty_actual'],
         uom: json['uom'],
         requestType: json['requestType'],
         status: json['status'],
@@ -49,8 +51,9 @@ class POCodeEntity {
       'index': index,
       'documentCode': documentCode,
       'sku': sku,
+      'skuName': skuName,
       'qty': qty,
-      'qty_actual': qty_actual,
+      'qtyActual': qtyActual,
       'uom': uom,
       'requestType': requestType,
       'actualReceive': actualReceive,
@@ -62,8 +65,9 @@ class POCodeEntity {
   int? index;
   String? documentCode;
   String? sku;
+  String? skuName;
   int? qty;
-  int? qty_actual;
+  int? qtyActual;
   String? uom;
   String? requestType;
   String? actualReceive;

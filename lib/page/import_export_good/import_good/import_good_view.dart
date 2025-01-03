@@ -35,10 +35,6 @@ class _ImportGoodViewState extends State<ImportGoodView> {
     setState(() {
       poCodeMode = POCodeMode.fromJson(jsonMap);
     });
-
-    for (final i in poCodeMode!.poCodeEntity!) {
-      rowDataLength = rowDataLength + 1;
-    }
   }
 
   @override
@@ -178,7 +174,7 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                       child: Center(child: Text("STT")),
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 1,
                                       child: Center(child: Text("Ma PO")),
                                     ),
                                     Expanded(
@@ -186,11 +182,11 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                       child: Center(child: Text("SKU")),
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 1,
                                       child: Center(child: Text("QTY PLAN")),
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 1,
                                       child: Center(child: Text("QTY ACTUAL")),
                                     ),
                                     Expanded(
@@ -241,7 +237,7 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                           child: AnimatedOpacity(
                             duration: Duration(milliseconds: 500),
                             opacity: selected ? 1.0 : 0.0,
-                            child: Container(
+                            child: SizedBox(
                                 width: selected ? 300 : 0,
                                 height: selected ? 200 : 0,
                                 child: Column(
@@ -296,17 +292,17 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                                       vertical: 2),
                                                   child: ElevatedButton(
                                                     onPressed: () {},
+                                                    style: ButtonStyle(
+                                                        backgroundColor:
+                                                            WidgetStateProperty
+                                                                .all<Color>(Colors
+                                                                    .blueAccent)),
                                                     child: Text(
                                                       'Input Qty',
                                                       style: TextStyle(
                                                           fontSize: 10,
                                                           color: Colors.white),
                                                     ),
-                                                    style: ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStateProperty
-                                                                .all<Color>(Colors
-                                                                    .blueAccent)),
                                                   ),
                                                 ),
                                                 childWhenDragging: Container(
@@ -316,17 +312,17 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                                       vertical: 2),
                                                   child: ElevatedButton(
                                                     onPressed: () {},
+                                                    style: ButtonStyle(
+                                                        backgroundColor:
+                                                            WidgetStateProperty
+                                                                .all<Color>(Colors
+                                                                    .blueAccent)),
                                                     child: Text(
                                                       'Input Qty',
                                                       style: TextStyle(
                                                           fontSize: 10,
                                                           color: Colors.white),
                                                     ),
-                                                    style: ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStateProperty
-                                                                .all<Color>(Colors
-                                                                    .blueAccent)),
                                                   ),
                                                 ),
                                                 child: Container(
@@ -336,17 +332,17 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                                       vertical: 2),
                                                   child: ElevatedButton(
                                                     onPressed: () {},
+                                                    style: ButtonStyle(
+                                                        backgroundColor:
+                                                            WidgetStateProperty
+                                                                .all<Color>(Colors
+                                                                    .blueAccent)),
                                                     child: Text(
                                                       'Input Qty',
                                                       style: TextStyle(
                                                           fontSize: 10,
                                                           color: Colors.white),
                                                     ),
-                                                    style: ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStateProperty
-                                                                .all<Color>(Colors
-                                                                    .blueAccent)),
                                                   ),
                                                 ),
                                               ),
@@ -357,15 +353,15 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                                     vertical: 2),
                                                 child: ElevatedButton(
                                                   onPressed: () {},
-                                                  child: Text('Option',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white)),
                                                   style: ButtonStyle(
                                                       backgroundColor:
                                                           WidgetStateProperty
                                                               .all<Color>(Colors
                                                                   .green)),
+                                                  child: Text('Option',
+                                                      style: TextStyle(
+                                                          fontSize: 10,
+                                                          color: Colors.white)),
                                                 ),
                                               ),
                                               Container(
@@ -375,15 +371,15 @@ class _ImportGoodViewState extends State<ImportGoodView> {
                                                     vertical: 2),
                                                 child: ElevatedButton(
                                                   onPressed: () {},
-                                                  child: Text('Option',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white)),
                                                   style: ButtonStyle(
                                                       backgroundColor:
                                                           WidgetStateProperty
                                                               .all<Color>(Colors
                                                                   .green)),
+                                                  child: Text('Option',
+                                                      style: TextStyle(
+                                                          fontSize: 10,
+                                                          color: Colors.white)),
                                                 ),
                                               )
                                             ],
@@ -748,7 +744,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
             ),
             onSubmitted: (value) {
               setState(() {
-                poCodeEntity?.qty_actual = int.parse(value) ?? 0;
+                poCodeEntity?.qtyActual = int.parse(value);
               });
               Navigator.of(context).pop();
             },
@@ -765,9 +761,9 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                 setState(() {
                   setState(() {
                     final qty = poCodeEntity?.qty;
-                    final inputqty_actual = poCodeEntity?.qty_actual =
-                        int.parse(controller.text) ?? 0;
-                    if (inputqty_actual != null && inputqty_actual >= qty!) {
+                    final inputQtyActual =
+                        poCodeEntity?.qtyActual = int.parse(controller.text);
+                    if (inputQtyActual != null && inputQtyActual >= qty!) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -821,7 +817,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Center(
                       child: Text(
                           "${widget.poCodeMode.poCodeEntity?[index].documentCode}"),
@@ -830,12 +826,14 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                   Expanded(
                     flex: 2,
                     child: Center(
-                      child:
-                          Text("${widget.poCodeMode.poCodeEntity?[index].sku}"),
+                      child: Text(
+                        "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Center(
                       child: Text(
                         "${widget.poCodeMode.poCodeEntity?[index].qty}",
@@ -845,10 +843,10 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Center(
                       child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qty_actual}",
+                        "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w700),
                       ),
@@ -939,17 +937,8 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                                   child: IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        int qtyActual = widget
-                                                .poCodeMode
-                                                .poCodeEntity?[index]
-                                                .qty_actual ??
-                                            0;
-                                        int qty = widget.poCodeMode
-                                                .poCodeEntity?[index].qty ??
-                                            0;
-
                                         widget.poCodeMode.poCodeEntity?[index]
-                                                .qty_actual =
+                                                .qtyActual =
                                             (widget.poCodeMode
                                                 .poCodeEntity?[index].qty);
                                       });
@@ -1150,7 +1139,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
             ),
             onSubmitted: (value) {
               setState(() {
-                poCodeEntity?.qty_actual = int.parse(value) ?? 0;
+                poCodeEntity?.qtyActual = int.parse(value);
               });
               Navigator.of(context).pop();
             },
@@ -1167,9 +1156,9 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                 setState(() {
                   setState(() {
                     final qty = poCodeEntity?.qty;
-                    final inputqty_actual = poCodeEntity?.qty_actual =
-                        int.parse(controller.text) ?? 0;
-                    if (inputqty_actual != null && inputqty_actual >= qty!) {
+                    final inputQtyActual =
+                        poCodeEntity?.qtyActual = int.parse(controller.text);
+                    if (inputQtyActual != null && inputQtyActual >= qty!) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -1250,7 +1239,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                     flex: 2,
                     child: Center(
                       child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qty_actual}",
+                        "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w700),
                       ),
@@ -1341,17 +1330,8 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                                   child: IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        int qtyActual = widget
-                                                .poCodeMode
-                                                .poCodeEntity?[index]
-                                                .qty_actual ??
-                                            0;
-                                        int qty = widget.poCodeMode
-                                                .poCodeEntity?[index].qty ??
-                                            0;
-
                                         widget.poCodeMode.poCodeEntity?[index]
-                                                .qty_actual =
+                                                .qtyActual =
                                             (widget.poCodeMode
                                                 .poCodeEntity?[index].qty);
                                       });
