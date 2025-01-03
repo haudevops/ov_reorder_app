@@ -98,6 +98,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Column(
             children: [
               Text('Vui lòng nhập số lượng thực nhận'),
@@ -114,12 +115,52 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Nhập số lượng',
+              fillColor: Colors.white30,
+              filled: true,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue, width: 0.8),
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
             onSubmitted: (value) {
               setState(() {
-                poCodeEntity?.qtyActual = int.parse(value);
+                final input = controller.text.trim();
+                final qty = poCodeEntity?.qty ?? 0;
+
+                String? errorMessage;
+
+                if (input.isEmpty) {
+                  errorMessage = 'Vui lòng nhập số lượng.';
+                } else {
+                  final inputQtyActual = int.tryParse(input);
+                  if (inputQtyActual == null) {
+                    errorMessage = 'Vui lòng nhập một số nguyên hợp lệ.';
+                  } else if (inputQtyActual > qty) {
+                    errorMessage =
+                        'Số lượng thực không được lớn hơn số lượng ban đầu (${qty}).';
+                  } else {
+                    poCodeEntity?.qtyActual = inputQtyActual;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.blue,
+                        content: Center(
+                          child: Text(
+                            'Lưu số lượng thành công!',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    );
+                    Navigator.of(context).pop();
+                    return;
+                  }
+                }
               });
-              Navigator.of(context).pop();
             },
           ),
           actions: [
@@ -127,40 +168,49 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Hủy'),
+              child: Text('Hủy', style: TextStyle(color: Colors.black54)),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
-                  setState(() {
-                    final qty = poCodeEntity?.qty;
-                    final inputQtyActual =
-                        poCodeEntity?.qtyActual = int.parse(controller.text);
-                    if (inputQtyActual != null && inputQtyActual >= qty!) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Cảnh báo"),
-                            content: Text(
-                                "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Đóng"),
-                              ),
-                            ],
-                          );
-                        },
+                  final input = controller.text.trim();
+                  final qty = poCodeEntity?.qty ?? 0;
+
+                  String? errorMessage;
+
+                  if (input.isEmpty) {
+                    errorMessage = 'Vui lòng nhập số lượng.';
+                  } else {
+                    final inputQtyActual = int.tryParse(input);
+                    if (inputQtyActual == null) {
+                      errorMessage = 'Vui lòng nhập một số nguyên hợp lệ.';
+                    } else if (inputQtyActual > qty) {
+                      errorMessage =
+                          'Số lượng thực không được lớn hơn số lượng ban đầu (${qty}).';
+                    } else {
+                      poCodeEntity?.qtyActual = inputQtyActual;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.blue,
+                          content: Center(
+                            child: Text(
+                              'Lưu số lượng thành công!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
                       );
+                      Navigator.of(context).pop();
+                      return;
                     }
-                  });
+                  }
                 });
-                Navigator.of(context).pop();
               },
-              child: Text('Xác nhận'),
+              child: Text(
+                'Xác nhận',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         );
@@ -256,8 +306,13 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content: Text(
-                                            'Đã thay đổi Location: ${data.data.toString()}')),
+                                      backgroundColor: Colors.blue,
+                                      content: Center(
+                                          child: Text(
+                                        'Đã thay đổi Location: ${data.data.toString()}',
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                    ),
                                   );
                                 },
                                 builder: (context, candidateData, rejectData) {

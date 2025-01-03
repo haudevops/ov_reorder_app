@@ -715,11 +715,11 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
 
   void _showQuantityDialog({POCodeEntity? poCodeEntity}) {
     final TextEditingController controller = TextEditingController();
-    String? errorMessage;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Column(
             children: [
               Text('Vui lòng nhập số lượng thực nhận'),
@@ -729,68 +729,103 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
               ),
             ],
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: controller,
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Nhập số lượng',
-                  fillColor: Colors.white30,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 0.8),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  errorText: errorMessage,
+          content: TextField(
+              controller: controller,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Nhập số lượng',
+                fillColor: Colors.white30,
+                filled: true,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 0.8),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            ],
-          ),
+              onSubmitted: (value) {
+                setState(() {
+                  final input = controller.text.trim();
+                  final qty = poCodeEntity?.qty ?? 0;
+
+                  String? errorMessage;
+
+                  if (input.isEmpty) {
+                    errorMessage = 'Vui lòng nhập số lượng.';
+                  } else {
+                    final inputQtyActual = int.tryParse(input);
+                    if (inputQtyActual == null) {
+                      errorMessage = 'Vui lòng nhập một số nguyên hợp lệ.';
+                    } else if (inputQtyActual > qty) {
+                      errorMessage =
+                          'Số lượng thực không được lớn hơn số lượng ban đầu (${qty}).';
+                    } else {
+                      poCodeEntity?.qtyActual = inputQtyActual;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.blue,
+                          content: Center(
+                            child: Text(
+                              'Lưu số lượng thành công!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                      return;
+                    }
+                  }
+                });
+              }),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Hủy'),
+              child: Text('Hủy', style: TextStyle(color: Colors.black54)),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
-                  final input = controller.text;
+                  final input = controller.text.trim();
                   final qty = poCodeEntity?.qty ?? 0;
-                  final inputQtyActual =
-                      poCodeEntity?.qtyActual = int.parse(controller.text);
+
+                  String? errorMessage;
+
                   if (input.isEmpty) {
                     errorMessage = 'Vui lòng nhập số lượng.';
-                    return;
+                  } else {
+                    final inputQtyActual = int.tryParse(input);
+                    if (inputQtyActual == null) {
+                      errorMessage = 'Vui lòng nhập một số nguyên hợp lệ.';
+                    } else if (inputQtyActual > qty) {
+                      errorMessage =
+                          'Số lượng thực không được lớn hơn số lượng ban đầu (${qty}).';
+                    } else {
+                      poCodeEntity?.qtyActual = inputQtyActual;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.blue,
+                          content: Center(
+                            child: Text(
+                              'Lưu số lượng thành công!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      );
+
+                      Navigator.of(context).pop();
+                      return;
+                    }
                   }
-
-                  if (inputQtyActual == null) {
-                    errorMessage = 'Vui lòng nhập một số nguyên hợp lệ.';
-                    return;
-                  }
-
-                  if (inputQtyActual > qty) {
-                    errorMessage =
-                        'Số lượng thực không được lớn hơn số lượng ban đầu (${qty}).';
-                    return;
-                  }
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Lưu số lượng thành công!'),
-                    ),
-                  );
-
-                  Navigator.of(context).pop();
                 });
               },
               child: Text(
@@ -888,8 +923,13 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                    content: Text(
-                                        'Đã thay đổi Location: ${data.data.toString()}')),
+                                  backgroundColor: Colors.blue,
+                                  content: Center(
+                                      child: Text(
+                                    'Đã thay đổi Location: ${data.data.toString()}',
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                                ),
                               );
                             },
                             builder: (context, candidateData, rejectData) {
@@ -953,7 +993,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                                       },
                                       child: Icon(
                                         Icons.arrow_back,
-                                        size: 18,
+                                        size: 20,
                                         color: Colors.blue,
                                       ),
                                     ),
@@ -963,7 +1003,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                                       onTap: () {},
                                       child: Icon(
                                         Icons.production_quantity_limits,
-                                        size: 18,
+                                        size: 20,
                                         color: Colors.blue,
                                       ),
                                     ),
@@ -977,7 +1017,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                                       },
                                       child: Icon(
                                         Icons.edit_note,
-                                        size: 18,
+                                        size: 20,
                                         color: Colors.blue,
                                       ),
                                     ),
