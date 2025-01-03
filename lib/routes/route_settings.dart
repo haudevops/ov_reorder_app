@@ -16,8 +16,8 @@ class CustomRouter {
         return SlideLeftRoute(HomeView());
       case ImportGoodView.routeName:
         return SlideLeftRoute(ImportGoodView());
-      case ExportGoodView.routeName:
-        return SlideLeftRoute(ExportGoodView());
+      case ReOrderAbleExportWidget.routeName:
+        return SlideLeftRoute(ReOrderAbleExportWidget(data: arg));
       default:
         throw ('this route name does not exist');
     }

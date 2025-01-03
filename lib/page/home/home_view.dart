@@ -69,8 +69,6 @@ class _HomeViewState extends State<HomeView> {
     switch (index) {
       case 1:
         return ImportGoodView();
-      case 2:
-        return ExportGoodView();
       default:
         return ImportGoodView();
     }
