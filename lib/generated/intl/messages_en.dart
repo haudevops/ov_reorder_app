@@ -25,9 +25,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "import_and_export_good":
             MessageLookupByLibrary.simpleMessage("Import and Export Good"),
+        "locator": MessageLookupByLibrary.simpleMessage("Locator"),
         "manage_location":
             MessageLookupByLibrary.simpleMessage("Manage location"),
         "manage_pallet": MessageLookupByLibrary.simpleMessage("Manage Pallet"),
+        "performer": MessageLookupByLibrary.simpleMessage("Performer"),
+        "po_code": MessageLookupByLibrary.simpleMessage("PO Code"),
+        "qty_plan": MessageLookupByLibrary.simpleMessage("Qty Plan"),
+        "sku": MessageLookupByLibrary.simpleMessage("SKU Code"),
+        "sku_name": MessageLookupByLibrary.simpleMessage("SKU name"),
+        "so_code": MessageLookupByLibrary.simpleMessage("SO Code"),
+        "status": MessageLookupByLibrary.simpleMessage("Status"),
+        "transfer_performer":
+            MessageLookupByLibrary.simpleMessage("Transfer performer"),
+        "uom": MessageLookupByLibrary.simpleMessage("UOM"),
+        "virtual_qty": MessageLookupByLibrary.simpleMessage("Virtual qty"),
         "welcome_to_reorder":
             MessageLookupByLibrary.simpleMessage("welcome_to_reorder")
       };

@@ -3,5 +3,16 @@
   "import_and_export_good": "Import and Export Good",
   "manage_pallet": "Manage Pallet",
   "manage_location": "Manage location",
-  "edit": "Edit"
+  "edit": "Edit",
+  "virtual_qty": "Virtual qty",
+  "uom": "UOM",
+  "sku_name": "SKU name",
+  "qty_plan": "Qty Plan",
+  "locator": "Locator",
+  "status": "Status",
+  "sku": "SKU Code",
+  "po_code": "PO Code",
+  "so_code": "SO Code",
+  "performer": "Performer",
+  "transfer_performer": "Transfer performer"
 }

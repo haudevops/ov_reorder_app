@@ -67,10 +67,8 @@ class _HomeViewState extends State<HomeView> {
 
   Widget renderBody(int index) {
     switch (index) {
-      case 1:
-        return ImportGoodView();
       default:
-        return ImportGoodView();
+        return InitImExView();
     }
   }
 }

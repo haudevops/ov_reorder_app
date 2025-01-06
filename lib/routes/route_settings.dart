@@ -14,10 +14,12 @@ class CustomRouter {
     switch (settings.name) {
       case HomeView.routeName:
         return SlideLeftRoute(HomeView());
-      case ImportGoodView.routeName:
-        return SlideLeftRoute(ImportGoodView());
+      case ReOrderAbleWidget.routeName:
+        return SlideLeftRoute(ReOrderAbleWidget(data: arg));
       case ReOrderAbleExportWidget.routeName:
         return SlideLeftRoute(ReOrderAbleExportWidget(data: arg));
+      case TimeLineView.routeName:
+        return SlideLeftRoute(TimeLineView(data: arg));
       default:
         throw ('this route name does not exist');
     }

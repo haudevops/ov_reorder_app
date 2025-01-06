@@ -1,649 +1,21 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:reorder_app/generated/l10n.dart';
 import 'package:reorder_app/models/models.dart';
 import 'package:reorder_app/page/page.dart';
 import 'package:reorder_app/routes/screen_arguments.dart';
 
-class ImportGoodView extends StatefulWidget {
-  const ImportGoodView({super.key});
-
-  static const routeName = '/ImportGoodView';
-
-  @override
-  State<ImportGoodView> createState() => _ImportGoodViewState();
-}
-
-class _ImportGoodViewState extends State<ImportGoodView> {
-  POCodeMode? poCodeMode;
-  bool selected = false;
-  int rowDataLength = 0;
-  int switchButton = 1;
-
-  @override
-  void initState() {
-    convertData();
-    super.initState();
-  }
-
-  void convertData() async {
-    String jsonString = await rootBundle.loadString('lib/data/po_data.json');
-
-    Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-
-    setState(() {
-      poCodeMode = POCodeMode.fromJson(jsonMap);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.all(8),
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  child: Container(
-                    width: 50,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child: Icon(Icons.menu, color: Colors.blue),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      switchButton = 1;
-                      convertData();
-                    });
-                  },
-                  child: Container(
-                    width: 200,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color:
-                            switchButton == 1 ? Colors.blue : Colors.grey,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child: Text(
-                        "Nhập hàng".toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      switchButton = 2;
-                      convertData();
-                    });
-                  },
-                  child: Container(
-                    width: 200,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color:
-                            switchButton == 2 ? Colors.blue : Colors.grey,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child: Text(
-                        "Xuất hàng".toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: Duration(seconds: 1),
-                          curve: Curves.easeInCubic,
-                          top: 0,
-                          bottom: 0,
-                          left: 0,
-                          right: selected ? 20 : 0,
-                          child: ListView(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            children: [
-                              Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(8),
-                                    topLeft: Radius.circular(8),
-                                  ),
-                                  color: Colors.blue,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("STT"),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: textHeader("Ma PO"),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: textHeader("SKU"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("QTY PLAN"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("QTY ACTUAL"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("ĐVT"),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: textHeader("LOCATION"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("STATUS"),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: textHeader("ACTUAL RECEIVE"),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              poCodeMode != null
-                                  ? switchButton == 1
-                                      ? ReOrderAbleWidget(
-                                          poCodeMode: poCodeMode!,
-                                          onSelectedChange: () {
-                                            setState(() {
-                                              selected = !selected;
-                                            });
-                                          },
-                                        )
-                                      : ReOrderAbleExportWidget(
-                                          data: ScreenArguments(arg1: poCodeMode)
-                                        )
-                                  : Center(child: CircularProgressIndicator()),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-
-                  // Container Edit
-                  SizedBox(
-                    width: selected ? 300 : 0,
-                    height: selected ? 200 : 0,
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: Duration(seconds: 1),
-                          curve: Curves.easeInCubic,
-                          top: 0,
-                          bottom: 0,
-                          left: selected ? 10 : 0,
-                          right: 0,
-                          child: AnimatedOpacity(
-                            duration: Duration(milliseconds: 500),
-                            opacity: selected ? 1.0 : 0.0,
-                            child: SizedBox(
-                                width: selected ? 300 : 0,
-                                height: selected ? 200 : 0,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height: 30,
-                                      color: Colors.purple[50],
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        // children: [
-                                        //   Text('Actual Receive'),
-                                        //   TextButton(
-                                        //       onPressed: () {},
-                                        //       child: Text('Save'))
-                                        // ],
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.white,
-                                      padding: EdgeInsets.all(5),
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                width: 90,
-                                                height: 30,
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 2),
-                                                child: Center(
-                                                    child: Text(
-                                                  'Quick Action',
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.red,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                )),
-                                              ),
-                                              Draggable(
-                                                data: 'Input qty',
-                                                feedback: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  child: ElevatedButton(
-                                                    onPressed: () {},
-                                                    style: ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStateProperty
-                                                                .all<Color>(Colors
-                                                                    .blueAccent)),
-                                                    child: Text(
-                                                      'Input Qty',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ),
-                                                childWhenDragging: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  child: ElevatedButton(
-                                                    onPressed: () {},
-                                                    style: ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStateProperty
-                                                                .all<Color>(Colors
-                                                                    .blueAccent)),
-                                                    child: Text(
-                                                      'Input Qty',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  child: ElevatedButton(
-                                                    onPressed: () {},
-                                                    style: ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStateProperty
-                                                                .all<Color>(Colors
-                                                                    .blueAccent)),
-                                                    child: Text(
-                                                      'Input Qty',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 90,
-                                                height: 30,
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 2),
-                                                child: ElevatedButton(
-                                                  onPressed: () {},
-                                                  style: ButtonStyle(
-                                                      backgroundColor:
-                                                          WidgetStateProperty
-                                                              .all<Color>(Colors
-                                                                  .green)),
-                                                  child: Text('Option',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white)),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 90,
-                                                height: 30,
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 2),
-                                                child: ElevatedButton(
-                                                  onPressed: () {},
-                                                  style: ButtonStyle(
-                                                      backgroundColor:
-                                                          WidgetStateProperty
-                                                              .all<Color>(Colors
-                                                                  .green)),
-                                                  child: Text('Option',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.white)),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 8,
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                width: 90,
-                                                height: 30,
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 2),
-                                                child: Center(
-                                                    child: Text(
-                                                  'Pick Location',
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.red,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                )),
-                                              ),
-                                              Draggable(
-                                                data: 'LA.92',
-                                                feedback: Material(
-                                                  color: Colors.transparent,
-                                                  child: Container(
-                                                    width: 90,
-                                                    height: 30,
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 2),
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                Colors.purple),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8)),
-                                                    child: Center(
-                                                      child: Text(
-                                                        'LA.92',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                childWhenDragging: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text(
-                                                      'LA.92',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.purple,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text(
-                                                      'LA.92',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.purple,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Draggable(
-                                                data: 'LA.72',
-                                                feedback: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text('LA.72',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600)),
-                                                  ),
-                                                ),
-                                                childWhenDragging: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text('LA.72',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600)),
-                                                  ),
-                                                ),
-                                                child: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text('LA.72',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600)),
-                                                  ),
-                                                ),
-                                              ),
-                                              Draggable(
-                                                data: 'LA.66',
-                                                feedback: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text('LA.66',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600)),
-                                                  ),
-                                                ),
-                                                childWhenDragging: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text('LA.66',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600)),
-                                                  ),
-                                                ),
-                                                child: Container(
-                                                  width: 90,
-                                                  height: 30,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.purple),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                    child: Text('LA.66',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.purple,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600)),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget textHeader(String title) {
-    return Center(
-        child: Text(
-      title,
-      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-    ));
-  }
-}
-
 class ReOrderAbleWidget extends StatefulWidget {
   const ReOrderAbleWidget(
-      {super.key, required this.poCodeMode, required this.onSelectedChange});
+      {super.key, required this.data, this.onSelectedChange});
 
-  final POCodeMode poCodeMode;
-  final Function onSelectedChange;
+  static const routeName = '/ReOrderAbleWidget';
+
+  final ScreenArguments data;
+  final Function? onSelectedChange;
 
   @override
   State<ReOrderAbleWidget> createState() => _ReOrderAbleWidgetState();
@@ -654,11 +26,15 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
   List<POCodeMode> items = [];
   List<AnimationController> listController = [];
   List<Animation<Color?>> colorAnimation = [];
+  POCodeEntity? poCodeEntity;
+  POCodeMode? poCodeMode;
+  List<TimeLineModel> timeLine = [];
 
   @override
   void initState() {
     initController();
-    widget.poCodeMode.poCodeEntity!.removeWhere((e) => e.requestType == 'SO');
+    poCodeMode = widget.data.arg1;
+    initData();
     super.initState();
   }
 
@@ -668,6 +44,10 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
       controller.dispose();
     }
     super.dispose();
+  }
+
+  void initData() {
+    poCodeMode!.poCodeEntity!.removeWhere((e) => e.requestType == 'SO');
   }
 
   void initController() {
@@ -696,18 +76,21 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
     ]);
   }
 
-  Widget buildStatusWidget(int index) {
+  Widget buildStatusWidget(int index, {bool isComplete = false}) {
     String statusText;
     Color textColor;
 
-    if (index == 0) {
+    if (index == 0 && !isComplete) {
       statusText = 'URGENT';
       textColor = Colors.red;
-    } else if (index == 1) {
+    } else if (index == 1 && !isComplete) {
       statusText = 'PENDING';
       textColor = Colors.yellow[700]!;
-    } else {
+    } else if (!isComplete) {
       statusText = 'NEW';
+      textColor = Colors.blue;
+    } else {
+      statusText = 'COMPLETE';
       textColor = Colors.green;
     }
 
@@ -717,7 +100,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
     );
   }
 
-  void _showQuantityDialog({POCodeEntity? poCodeEntity}) {
+  void _showQuantityDialog({POCodeEntity? poCodeEntity, int? index}) {
     final TextEditingController controller = TextEditingController();
 
     showDialog(
@@ -743,7 +126,61 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
             ),
             onSubmitted: (value) {
               setState(() {
-                poCodeEntity?.qtyActual = int.parse(value);
+                final qty = poCodeEntity?.qty;
+                final inputQtyActual = int.parse(controller.text);
+
+                if (inputQtyActual == qty) {
+                  POCodeEntity firstElement =
+                      poCodeMode!.poCodeEntity!.removeAt(index!);
+                  firstElement.status = "COMPLETE";
+                  firstElement.qtyActual = inputQtyActual;
+                  poCodeMode!.poCodeEntity!.add(firstElement);
+                  timeLine.add(TimeLineModel(
+                      title: 'Cập nhật PO',
+                      content:
+                          'Đơn ${firstElement.documentCode} hoàn thành Pallet',
+                      dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                          .format(DateTime.now()),
+                      documentCode: firstElement.documentCode));
+                } else if (inputQtyActual >= qty!) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Cảnh báo"),
+                        content: Text(
+                            "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Đóng"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  timeLine.add(TimeLineModel(
+                      title: 'Cập nhật PO',
+                      content:
+                          'Admin cập nhật sai Pallet - ${poCodeMode!.poCodeEntity![index!].documentCode}',
+                      dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                          .format(DateTime.now()),
+                      documentCode:
+                          poCodeMode!.poCodeEntity![index].documentCode));
+                } else {
+                  poCodeEntity?.qtyActual = int.parse(controller.text);
+                  timeLine.add(TimeLineModel(
+                      title: 'Cập nhật PO',
+                      content:
+                          'Admin cập nhật ${int.parse(controller.text)} thùng cho ${poCodeMode!.poCodeEntity![index!].documentCode}',
+                      dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                          .format(DateTime.now()),
+                      documentCode:
+                          poCodeMode!.poCodeEntity![index].documentCode));
+                }
               });
               Navigator.of(context).pop();
             },
@@ -758,31 +195,62 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
             TextButton(
               onPressed: () {
                 setState(() {
-                  setState(() {
-                    final qty = poCodeEntity?.qty;
-                    final inputQtyActual =
-                        poCodeEntity?.qtyActual = int.parse(controller.text);
-                    if (inputQtyActual != null && inputQtyActual >= qty!) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Cảnh báo"),
-                            content: Text(
-                                "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Đóng"),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  });
+                  final qty = poCodeEntity?.qty;
+                  final inputQtyActual = int.parse(controller.text);
+
+                  if (inputQtyActual == qty) {
+                    POCodeEntity firstElement =
+                        poCodeMode!.poCodeEntity!.removeAt(index!);
+                    firstElement.status = "COMPLETE";
+                    firstElement.qtyActual = inputQtyActual;
+                    poCodeMode!.poCodeEntity!.add(firstElement);
+
+                    timeLine.add(TimeLineModel(
+                        title: 'Cập nhật PO',
+                        content:
+                            'Đơn ${firstElement.documentCode} hoàn thành Pallet',
+                        dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                            .format(DateTime.now()),
+                        documentCode: firstElement.documentCode));
+                  } else if (inputQtyActual >= qty!) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Cảnh báo"),
+                          content: Text(
+                              "Số lượng thực nhận phải nhỏ hơn hoặc bằng số lượng."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("Đóng"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    timeLine.add(TimeLineModel(
+                        title: 'Cập nhật PO',
+                        content:
+                            'Admin cập nhật sai Pallet - ${poCodeMode!.poCodeEntity![index!].documentCode}',
+                        dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                            .format(DateTime.now()),
+                        documentCode:
+                            poCodeMode!.poCodeEntity![index].documentCode));
+                  } else {
+                    poCodeEntity?.qtyActual = int.parse(controller.text);
+                    timeLine.add(TimeLineModel(
+                        title: 'Cập nhật PO',
+                        content:
+                            'Admin cập nhật ${int.parse(controller.text)} thùng cho ${poCodeMode!.poCodeEntity![index!].documentCode}',
+                        dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                            .format(DateTime.now()),
+                        documentCode:
+                            poCodeMode!.poCodeEntity![index].documentCode));
+                  }
                 });
                 Navigator.of(context).pop();
               },
@@ -794,12 +262,415 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
     );
   }
 
+  void _showEditDialog({POCodeEntity? poCodeEntity, int? index}) {
+    final TextEditingController requestQtyController = TextEditingController();
+    final TextEditingController pickerController = TextEditingController();
+
+    if (poCodeEntity!.qtyActual != 0) {
+      requestQtyController.text = poCodeEntity.qtyActual.toString();
+    }
+
+    showDialog(
+      context: context,
+      builder: (buildContext) {
+        return Dialog(
+          child: SizedBox(
+              width: 400,
+              height: 520,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      child: Center(
+                          child: Text(
+                        'Thông tin cần điều chỉnh'.toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600),
+                      )),
+                    ),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      child: Table(
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: IntrinsicColumnWidth(),
+                          1: FlexColumnWidth(),
+                          2: FixedColumnWidth(34),
+                        },
+                        children: [
+                          _itemWidget(
+                              title: S.current.po_code,
+                              widget: Container(
+                                height: 45,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    poCodeEntity.documentCode ?? "",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              )),
+                          _itemWidget(
+                              title: S.current.sku,
+                              widget: Container(
+                                height: 45,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    poCodeEntity?.sku ?? "",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.orange),
+                                  ),
+                                ),
+                              )),
+                          _itemWidget(
+                              title: S.current.sku_name,
+                              widget: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    poCodeEntity.skuName ?? "",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.orange),
+                                  ),
+                                ),
+                              )),
+                          _itemWidget(
+                              title: S.current.uom,
+                              widget: Container(
+                                height: 45,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    poCodeEntity.uom ?? "",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              )),
+                          _itemWidget(
+                              title: S.current.qty_plan,
+                              widget: Container(
+                                height: 45,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "${poCodeEntity.qty}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.red),
+                                  ),
+                                ),
+                              )),
+                          _itemWidget(
+                              title: S.current.virtual_qty,
+                              widget: Container(
+                                width: double.infinity,
+                                height: 45,
+                                margin: EdgeInsets.only(left: 10),
+                                child: TextFormField(
+                                  controller: requestQtyController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Nhập số',
+                                    hintStyle: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Colors.white,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  onFieldSubmitted: (value) {},
+                                  onTapOutside: (event) {},
+                                  onChanged: (value) {},
+                                  keyboardType: TextInputType.number,
+                                  style: const TextStyle(
+                                    fontFamily: "Poppins",
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )),
+                          _itemWidget(
+                              title: S.current.transfer_performer,
+                              widget: Container(
+                                width: double.infinity,
+                                height: 45,
+                                margin: EdgeInsets.only(left: 10),
+                                child: TextFormField(
+                                  controller: pickerController,
+                                  decoration: InputDecoration(
+                                    hintText: poCodeEntity.picker,
+                                    hintStyle: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Colors.white,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  onFieldSubmitted: (value) {},
+                                  onTapOutside: (event) {},
+                                  onChanged: (value) {},
+                                  keyboardType: TextInputType.number,
+                                  style: const TextStyle(
+                                    fontFamily: "Poppins",
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(buildContext);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.grey),
+                                child: Center(
+                                  child: Text(
+                                    'Huỷ'.toUpperCase(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(buildContext);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.blue),
+                                child: Center(
+                                  child: Text('Xác nhận'.toUpperCase(),
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )),
+        );
+      },
+    ).then((value) {
+      setState(() {
+        if (RegExp(r'^\d+$').hasMatch(requestQtyController.text) &&
+            int.parse(requestQtyController.text) <= poCodeEntity.qty! && int.parse(requestQtyController.text) != poCodeEntity.qtyActual!) {
+          poCodeMode!.poCodeEntity![index!].qtyActual =
+              int.parse(requestQtyController.text);
+          timeLine.add(TimeLineModel(
+              title: 'Điều chỉnh PO',
+              content:
+                  'Admin cập nhật số lượng ${int.parse(requestQtyController.text)} cho ${poCodeMode!.poCodeEntity![index].documentCode}',
+              dateTime:
+                  DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+              documentCode: poCodeMode!.poCodeEntity![index].documentCode));
+        }
+
+        if (pickerController.text != poCodeEntity.picker &&
+            pickerController.text.isNotEmpty) {
+          poCodeMode!.poCodeEntity![index!].picker = pickerController.text;
+          timeLine.add(TimeLineModel(
+              title: 'Điều chỉnh PO',
+              content:
+                  'Điều chuyển Picker ${poCodeMode!.poCodeEntity![index].picker} cho ${poCodeMode!.poCodeEntity![index].documentCode}',
+              dateTime:
+                  DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+              documentCode: poCodeMode!.poCodeEntity![index].documentCode));
+        }
+      });
+    });
+  }
+
+  void _showQRCodeDialog({POCodeEntity? poCodeEntity}) {
+    showDialog(
+      context: context,
+      builder: (buildContext) {
+        return Dialog(
+          child: SizedBox(
+              width: 400,
+              height: 350,
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      QrImageView(
+                        data: "${poCodeEntity?.sku} - ${poCodeEntity?.skuName}",
+                        version: QrVersions.auto,
+                        size: 250,
+                        padding: EdgeInsets.zero,
+                      ),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          "${poCodeEntity?.sku} - ${poCodeEntity?.skuName}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ))),
+        );
+      },
+    );
+    setState(() {
+      timeLine.add(TimeLineModel(
+          title: 'Yêu cầu QRCode',
+          content: 'Admin yêu cầu QRCode của ${poCodeEntity?.documentCode}',
+          dateTime: DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+          documentCode: poCodeEntity?.documentCode));
+    });
+  }
+
+  void _showOTPDialog({POCodeEntity? poCodeEntity}) {
+    showDialog(
+      context: context,
+      builder: (buildContext) {
+        return Dialog(
+          child: SizedBox(
+              width: 400,
+              height: 200,
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 10),
+                      Center(
+                        child: Text(
+                          "Mã OTP của bạn".toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 25),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          "1  4  3  6",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 40,
+                              color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ))),
+        );
+      },
+    );
+    setState(() {
+      timeLine.add(TimeLineModel(
+          title: 'Yêu cầu OTP',
+          content: 'Admin yêu cầu OTP của ${poCodeEntity?.documentCode}',
+          dateTime: DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+          documentCode: poCodeEntity?.documentCode));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Container> recordContainer = <Container>[
-      for (int index = 0;
-          index < widget.poCodeMode.poCodeEntity!.length;
-          index += 1)
+      for (int index = 0; index < poCodeMode!.poCodeEntity!.length; index += 1)
         Container(
           key: Key('$index'),
           color: Colors.white,
@@ -820,7 +691,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     flex: 2,
                     child: Center(
                       child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].documentCode}",
+                        "${poCodeMode!.poCodeEntity?[index].documentCode}",
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -828,7 +699,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                   Expanded(
                     flex: 3,
                     child: Text(
-                      "${widget.poCodeMode.poCodeEntity?[index].sku} - ${widget.poCodeMode.poCodeEntity?[index].skuName}",
+                      "${poCodeMode!.poCodeEntity?[index].sku} - ${poCodeMode!.poCodeEntity?[index].skuName}",
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -839,7 +710,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     flex: 1,
                     child: Center(
                       child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qty}",
+                        "${poCodeMode!.poCodeEntity?[index].qty}",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w700),
                       ),
@@ -849,7 +720,7 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                     flex: 1,
                     child: Center(
                       child: Text(
-                        "${widget.poCodeMode.poCodeEntity?[index].qtyActual}",
+                        "${poCodeMode!.poCodeEntity?[index].qtyActual}",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w700),
                       ),
@@ -858,65 +729,61 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                   Expanded(
                     flex: 1,
                     child: Center(
-                      child:
-                          Text("${widget.poCodeMode.poCodeEntity?[index].uom}"),
+                      child: Text("${poCodeMode!.poCodeEntity?[index].uom}"),
                     ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: DragTarget(
-                      onAcceptWithDetails: (data) {
-                        setState(() {
-                          widget.poCodeMode.poCodeEntity?[index].location =
-                              data.data.toString();
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                  'Đã thay đổi Location: ${data.data.toString()}')),
-                        );
-                      },
-                      builder: (context, candidateData, rejectData) {
-                        return (index == 0 || index == 1 || index == 2)
-                            ? AnimatedBuilder(
-                                animation: colorAnimation[index],
-                                builder: (context, child) {
-                                  return Container(
-                                    height: 50,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 30),
-                                    decoration: BoxDecoration(
-                                        color: colorAnimation[index].value,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Center(
-                                      child: Text(
-                                          "${widget.poCodeMode.poCodeEntity?[index].location}"),
-                                    ),
-                                  );
-                                },
-                              )
-                            : Container(
+                    child: (poCodeMode!.poCodeEntity?[index].status !=
+                                'COMPLETE' &&
+                            (index == 0 || index == 1 || index == 2))
+                        ? AnimatedBuilder(
+                            animation: colorAnimation[index],
+                            builder: (context, child) {
+                              return Container(
                                 height: 50,
                                 margin: EdgeInsets.symmetric(horizontal: 30),
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: colorAnimation[index].value,
                                     borderRadius: BorderRadius.circular(8)),
                                 child: Center(
                                   child: Text(
-                                      "${widget.poCodeMode.poCodeEntity?[index].location}"),
+                                      "${poCodeMode!.poCodeEntity?[index].location}"),
                                 ),
                               );
-                      },
-                    ),
+                            },
+                          )
+                        : Container(
+                            height: 50,
+                            margin: EdgeInsets.symmetric(horizontal: 30),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Center(
+                              child: Text(
+                                  "${poCodeMode!.poCodeEntity?[index].location}"),
+                            ),
+                          ),
                   ),
                   Expanded(
                     flex: 1,
                     child: Center(
-                      child: buildStatusWidget(index),
+                      child: buildStatusWidget(index,
+                          isComplete: poCodeMode!.poCodeEntity?[index].status ==
+                              "COMPLETE"),
                     ),
                   ),
                   Expanded(
-                    flex: 1,
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        "${poCodeMode!.poCodeEntity?[index].picker}",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
                     child: SizedBox(
                         height: 40,
                         child: Row(
@@ -925,24 +792,25 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    widget.poCodeMode.poCodeEntity?[index]
-                                            .qtyActual =
-                                        (widget.poCodeMode.poCodeEntity?[index]
-                                            .qty);
+                                    poCodeMode!.poCodeEntity?[index].qtyActual =
+                                        (poCodeMode!.poCodeEntity?[index].qty);
+                                    POCodeEntity firstElement = poCodeMode!
+                                        .poCodeEntity!
+                                        .removeAt(index);
+                                    firstElement.status = "COMPLETE";
+                                    poCodeMode!.poCodeEntity!.add(firstElement);
+
+                                    timeLine.add(TimeLineModel(
+                                        title: 'Cập nhật PO',
+                                        content:
+                                        'Đơn ${firstElement.documentCode} hoàn thành Pallet',
+                                        dateTime: DateFormat('yyyy/MM/dd HH:mm:ss')
+                                            .format(DateTime.now()),
+                                        documentCode: firstElement.documentCode));
                                   });
                                 },
                                 child: Icon(
-                                  Icons.arrow_back,
-                                  size: 18,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.production_quantity_limits,
+                                  Icons.inventory_outlined,
                                   size: 18,
                                   color: Colors.blue,
                                 ),
@@ -951,9 +819,48 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
+                                  _showQRCodeDialog(
+                                      poCodeEntity:
+                                          poCodeMode!.poCodeEntity?[index]);
+                                },
+                                child: Icon(
+                                  Icons.qr_code,
+                                  size: 18,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showOTPDialog(
+                                      poCodeEntity:
+                                          poCodeMode!.poCodeEntity?[index]);
+                                },
+                                child: Icon(
+                                  Icons.password,
+                                  size: 18,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                            // Expanded(
+                            //   child: GestureDetector(
+                            //     onTap: () {},
+                            //     child: Icon(
+                            //       Icons.production_quantity_limits,
+                            //       size: 18,
+                            //       color: Colors.blue,
+                            //     ),
+                            //   ),
+                            // ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
                                   _showQuantityDialog(
-                                      poCodeEntity: widget
-                                          .poCodeMode.poCodeEntity?[index]);
+                                      poCodeEntity:
+                                          poCodeMode!.poCodeEntity?[index],
+                                      index: index);
                                 },
                                 child: Icon(
                                   Icons.edit_note,
@@ -961,12 +868,53 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
                                   color: Colors.blue,
                                 ),
                               ),
-                            )
+                            ),
+                            Visibility(
+                              visible: timeLine.any((e) =>
+                                  e.documentCode ==
+                                  poCodeMode!
+                                      .poCodeEntity?[index].documentCode),
+                              child: Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    List<TimeLineModel> timeLineData = [];
+                                    timeLineData.addAll(timeLine);
+
+                                    for (final i in timeLineData) {
+                                      if(i.documentCode != poCodeMode!
+                                          .poCodeEntity?[index]
+                                          .documentCode) {
+                                        timeLineData.remove(i);
+                                      }
+                                    }
+
+                                    showDialog(
+                                        context: context,
+                                        builder: (buildContext) {
+                                          return TimeLineView(
+                                            data: ScreenArguments(
+                                                arg1: timeLineData),
+                                          );
+                                        });
+                                  },
+                                  child: Icon(
+                                    Icons.warning_amber,
+                                    size: 18,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         )),
                   ),
                 ],
               ),
+              onTap: () {
+                _showEditDialog(
+                    poCodeEntity: poCodeMode!.poCodeEntity?[index],
+                    index: index);
+              },
             ),
           ),
         ),
@@ -1003,13 +951,30 @@ class _ReOrderAbleWidgetState extends State<ReOrderAbleWidget>
             newIndex -= 1;
           }
           final POCodeEntity item =
-              widget.poCodeMode.poCodeEntity!.removeAt(oldIndex);
+              poCodeMode!.poCodeEntity!.removeAt(oldIndex);
 
-          widget.poCodeMode.poCodeEntity!.insert(newIndex, item);
+          poCodeMode!.poCodeEntity!.insert(newIndex, item);
+          timeLine.add(TimeLineModel(
+              title: 'Thay đổi độ ưu tiên của đơn đơn',
+              content:
+                  'Admin thay đổi ưu tiên đơn ${item.documentCode} vào vị trí $newIndex',
+              dateTime:
+                  DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+              documentCode: item.documentCode));
         });
       },
       children: recordContainer,
     );
   }
-}
 
+  TableRow _itemWidget({required String title, required Widget widget}) {
+    return TableRow(children: [
+      Padding(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child:
+            Text('$title:', style: TextStyle(fontSize: 14, color: Colors.grey)),
+      ),
+      Padding(padding: EdgeInsets.symmetric(vertical: 4), child: widget)
+    ]);
+  }
+}

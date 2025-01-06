@@ -99,6 +99,116 @@ class S {
       args: [],
     );
   }
+
+  /// `Virtual qty`
+  String get virtual_qty {
+    return Intl.message(
+      'Virtual qty',
+      name: 'virtual_qty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UOM`
+  String get uom {
+    return Intl.message(
+      'UOM',
+      name: 'uom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SKU name`
+  String get sku_name {
+    return Intl.message(
+      'SKU name',
+      name: 'sku_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Qty Plan`
+  String get qty_plan {
+    return Intl.message(
+      'Qty Plan',
+      name: 'qty_plan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locator`
+  String get locator {
+    return Intl.message(
+      'Locator',
+      name: 'locator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status`
+  String get status {
+    return Intl.message(
+      'Status',
+      name: 'status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SKU Code`
+  String get sku {
+    return Intl.message(
+      'SKU Code',
+      name: 'sku',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PO Code`
+  String get po_code {
+    return Intl.message(
+      'PO Code',
+      name: 'po_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SO Code`
+  String get so_code {
+    return Intl.message(
+      'SO Code',
+      name: 'so_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Performer`
+  String get performer {
+    return Intl.message(
+      'Performer',
+      name: 'performer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer performer`
+  String get transfer_performer {
+    return Intl.message(
+      'Transfer performer',
+      name: 'transfer_performer',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

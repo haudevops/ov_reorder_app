@@ -30,6 +30,7 @@ class POCodeEntity {
       this.actualReceive,
       this.status,
       this.location,
+      this.picker,
       this.isActive});
 
   factory POCodeEntity.fromJson(Map<String, dynamic> json) {
@@ -39,12 +40,13 @@ class POCodeEntity {
         sku: json['sku'],
         skuName: json['skuName'],
         qty: json['qty'],
-        qtyActual: json['qty_actual'],
+        qtyActual: json['qty_actual'] ?? 0,
         uom: json['uom'],
         requestType: json['requestType'],
         status: json['status'],
         actualReceive: json['actualReceive'] ?? "",
         location: json['location'],
+        picker: json['picker'],
         isActive: json['isActive']);
   }
 
@@ -62,6 +64,7 @@ class POCodeEntity {
       'location': location,
       'status': status,
       'isActive': isActive,
+      'picker': picker,
     };
   }
 
@@ -77,4 +80,5 @@ class POCodeEntity {
   String? location;
   String? status;
   String? isActive;
+  String? picker;
 }

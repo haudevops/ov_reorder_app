@@ -25,9 +25,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit": MessageLookupByLibrary.simpleMessage("Chỉnh sửa"),
         "import_and_export_good":
             MessageLookupByLibrary.simpleMessage("Nhập và xuất hàng"),
+        "locator": MessageLookupByLibrary.simpleMessage("Vị trí lưu trữ"),
         "manage_location":
             MessageLookupByLibrary.simpleMessage("Quản lý vị trí lưu trữ"),
         "manage_pallet": MessageLookupByLibrary.simpleMessage("Quản lý Pallet"),
+        "performer": MessageLookupByLibrary.simpleMessage("Người thực hiện"),
+        "po_code": MessageLookupByLibrary.simpleMessage("Mã PO"),
+        "qty_plan": MessageLookupByLibrary.simpleMessage("Số lượng kế hoạch"),
+        "sku": MessageLookupByLibrary.simpleMessage("Mã SKU"),
+        "sku_name": MessageLookupByLibrary.simpleMessage("Tên sản phẩm"),
+        "so_code": MessageLookupByLibrary.simpleMessage("Mã SO"),
+        "status": MessageLookupByLibrary.simpleMessage("Trạng thái"),
+        "transfer_performer":
+            MessageLookupByLibrary.simpleMessage("Đổi người thực hiện"),
+        "uom": MessageLookupByLibrary.simpleMessage("ĐVT"),
+        "virtual_qty":
+            MessageLookupByLibrary.simpleMessage("Số lượng thực xuất"),
         "welcome_to_reorder":
             MessageLookupByLibrary.simpleMessage("Chào mừng đến với Reorder")
       };

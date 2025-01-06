@@ -12,7 +12,8 @@
       "requestType": "PO",
       "status": "Urgent",
       "actual_receive": "",
-      "is_active": false
+      "is_active": false,
+      "picker": "Phạm Ngọc Ẩn"
     },
     {
       "index": 2,
@@ -26,8 +27,8 @@
       "requestType": "PO",
       "status": "Pending",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Tạ Kim Tuấn"
     },
     {
       "index": 3,
@@ -41,8 +42,8 @@
       "requestType": "PO",
       "status": "New",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Võ Đình Liêm"
     },
     {
       "index": 4,
@@ -56,8 +57,8 @@
       "requestType": "PO",
       "status": "New",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Nguyễn Văn Tùng"
     },
     {
       "index": 5,
@@ -71,8 +72,8 @@
       "requestType": "PO",
       "status": "New",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Cổ Kim Lân"
     },
     {
       "index": 6,
@@ -86,8 +87,8 @@
       "requestType": "SO",
       "status": "Urgent",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Phạm Kim Tuấn"
     },
     {
       "index": 7,
@@ -101,8 +102,8 @@
       "requestType": "SO",
       "status": "Pending",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Đoàn Thị Thuỳ Thông"
     },
     {
       "index": 8,
@@ -116,8 +117,8 @@
       "requestType": "SO",
       "status": "New",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Kim Thanh"
     },
     {
       "index": 9,
@@ -131,8 +132,8 @@
       "requestType": "SO",
       "status": "New",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Đỗ Đạt"
     },
     {
       "index": 10,
@@ -146,8 +147,8 @@
       "requestType": "SO",
       "status": "New",
       "actual_receive": "",
-      "is_active": false
-
+      "is_active": false,
+      "picker": "Thành Nhân"
     }
   ]
 }

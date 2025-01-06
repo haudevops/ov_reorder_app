@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,14 +5,11 @@ import 'package:reorder_app/models/models.dart';
 import 'package:reorder_app/routes/screen_arguments.dart';
 
 class ReOrderAbleExportWidget extends StatefulWidget {
-  const ReOrderAbleExportWidget(
-      {super.key, required this.data});
+  const ReOrderAbleExportWidget({super.key, required this.data});
 
   static const routeName = '/ReOrderAbleExportWidget';
 
   final ScreenArguments data;
-
-
 
   @override
   State<ReOrderAbleExportWidget> createState() =>
@@ -139,7 +135,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                   setState(() {
                     final qty = poCodeEntity?.qty;
                     final inputQtyActual =
-                    poCodeEntity?.qtyActual = int.parse(controller.text);
+                        poCodeEntity?.qtyActual = int.parse(controller.text);
                     if (inputQtyActual != null && inputQtyActual >= qty!) {
                       showDialog(
                         context: context,
@@ -175,16 +171,14 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
   @override
   Widget build(BuildContext context) {
     final List<Container> recordContainer = <Container>[
-      for (int index = 0;
-      index < poCodeMode!.poCodeEntity!.length;
-      index += 1)
+      for (int index = 0; index < poCodeMode!.poCodeEntity!.length; index += 1)
         Container(
           key: Key('$index'),
           color: Colors.white,
           child: ReorderableDragStartListener(
             index: index,
             child: ListTile(
-              contentPadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.zero,
                 title: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -216,7 +210,8 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                              color: Colors.orange, fontWeight: FontWeight.w600),
+                              color: Colors.orange,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                       Expanded(
@@ -225,7 +220,8 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                           child: Text(
                             "${poCodeMode!.poCodeEntity?[index].qty}",
                             style: TextStyle(
-                                color: Colors.blue, fontWeight: FontWeight.w700),
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -235,7 +231,8 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                           child: Text(
                             "${poCodeMode!.poCodeEntity?[index].qtyActual}",
                             style: TextStyle(
-                                color: Colors.blue, fontWeight: FontWeight.w700),
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -243,7 +240,7 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                         flex: 1,
                         child: Center(
                           child:
-                          Text("${poCodeMode!.poCodeEntity?[index].uom}"),
+                              Text("${poCodeMode!.poCodeEntity?[index].uom}"),
                         ),
                       ),
                       Expanded(
@@ -263,33 +260,35 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                           builder: (context, candidateData, rejectData) {
                             return (index == 0 || index == 1 || index == 2)
                                 ? AnimatedBuilder(
-                              animation: colorAnimation[index],
-                              builder: (context, child) {
-                                return Container(
-                                  height: 50,
-                                  margin:
-                                  EdgeInsets.symmetric(horizontal: 30),
-                                  decoration: BoxDecoration(
-                                      color: colorAnimation[index].value,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Center(
-                                    child: Text(
-                                        "${poCodeMode!.poCodeEntity?[index].location}"),
-                                  ),
-                                );
-                              },
-                            )
+                                    animation: colorAnimation[index],
+                                    builder: (context, child) {
+                                      return Container(
+                                        height: 50,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 30),
+                                        decoration: BoxDecoration(
+                                            color: colorAnimation[index].value,
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: Center(
+                                          child: Text(
+                                              "${poCodeMode!.poCodeEntity?[index].location}"),
+                                        ),
+                                      );
+                                    },
+                                  )
                                 : Container(
-                              height: 50,
-                              margin: EdgeInsets.symmetric(horizontal: 30),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Center(
-                                child: Text(
-                                    "${poCodeMode!.poCodeEntity?[index].location}"),
-                              ),
-                            );
+                                    height: 50,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 30),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Center(
+                                      child: Text(
+                                          "${poCodeMode!.poCodeEntity?[index].location}"),
+                                    ),
+                                  );
                           },
                         ),
                       ),
@@ -310,9 +309,9 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                                     onTap: () {
                                       setState(() {
                                         poCodeMode!.poCodeEntity?[index]
-                                            .qtyActual =
-                                        (poCodeMode!.poCodeEntity?[index]
-                                            .qty);
+                                                .qtyActual =
+                                            (poCodeMode!
+                                                .poCodeEntity?[index].qty);
                                       });
                                     },
                                     child: Icon(
@@ -336,7 +335,8 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
                                   child: GestureDetector(
                                     onTap: () {
                                       _showQuantityDialog(
-                                          poCodeEntity: poCodeMode!.poCodeEntity?[index]);
+                                          poCodeEntity:
+                                              poCodeMode!.poCodeEntity?[index]);
                                     },
                                     child: Icon(
                                       Icons.edit_note,
@@ -386,11 +386,13 @@ class _ReOrderAbleExportWidgetState extends State<ReOrderAbleExportWidget>
             newIndex -= 1;
           }
           final POCodeEntity item =
-          poCodeMode!.poCodeEntity!.removeAt(oldIndex);
+              poCodeMode!.poCodeEntity!.removeAt(oldIndex);
           poCodeMode!.poCodeEntity!.insert(newIndex, item);
         });
       },
       children: recordContainer,
     );
   }
+
+
 }
