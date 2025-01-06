@@ -14,5 +14,24 @@
   "po_code": "PO Code",
   "so_code": "SO Code",
   "performer": "Performer",
-  "transfer_performer": "Transfer performer"
+  "transfer_performer": "Transfer performer",
+  "stt": "STT",
+  "qty_actual": "Qty actual",
+  "location": "Location",
+  "Performer": "Performer",
+  "actual_receive": "Actual receive",
+  "urgent": "Urgent",
+  "pending": "Pending",
+  "status_new": "New",
+  "import": "Import",
+  "export": "Export",
+  "please_enter_qty_actual": "Please enter actual quantity received",
+  "enter_quantity": "Enter quantity",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "name_product": "Name product",
+  "change_performxer": "change performer",
+  "import_export": "import and export of goods",
+  "uoc": "Unit of calculation"
 }
+

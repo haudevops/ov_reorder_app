@@ -209,6 +209,186 @@ class S {
       args: [],
     );
   }
+
+  /// `STT`
+  String get stt {
+    return Intl.message(
+      'STT',
+      name: 'stt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Qty actual`
+  String get qty_actual {
+    return Intl.message(
+      'Qty actual',
+      name: 'qty_actual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location`
+  String get location {
+    return Intl.message(
+      'Location',
+      name: 'location',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Performer`
+  String get Performer {
+    return Intl.message(
+      'Performer',
+      name: 'Performer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actual receive`
+  String get actual_receive {
+    return Intl.message(
+      'Actual receive',
+      name: 'actual_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Urgent`
+  String get urgent {
+    return Intl.message(
+      'Urgent',
+      name: 'urgent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending`
+  String get pending {
+    return Intl.message(
+      'Pending',
+      name: 'pending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New`
+  String get status_new {
+    return Intl.message(
+      'New',
+      name: 'status_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get import {
+    return Intl.message(
+      'Import',
+      name: 'import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export`
+  String get export {
+    return Intl.message(
+      'Export',
+      name: 'export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter actual quantity received`
+  String get please_enter_qty_actual {
+    return Intl.message(
+      'Please enter actual quantity received',
+      name: 'please_enter_qty_actual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter quantity`
+  String get enter_quantity {
+    return Intl.message(
+      'Enter quantity',
+      name: 'enter_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name product`
+  String get name_product {
+    return Intl.message(
+      'Name product',
+      name: 'name_product',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `change performer`
+  String get change_performxer {
+    return Intl.message(
+      'change performer',
+      name: 'change_performxer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `import and export of goods`
+  String get import_export {
+    return Intl.message(
+      'import and export of goods',
+      name: 'import_export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unit of calculation`
+  String get uoc {
+    return Intl.message(
+      'Unit of calculation',
+      name: 'uoc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

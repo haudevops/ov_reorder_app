@@ -77,15 +77,13 @@ class _InitImExViewState extends State<InitImExView> {
                     width: 200,
                     height: 40,
                     decoration: BoxDecoration(
-                        color:
-                        switchButton == 1 ? Colors.blue : Colors.grey,
+                        color: switchButton == 1 ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
-                        "Nhập hàng".toUpperCase(),
+                        S.current.import.toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
+                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -102,15 +100,13 @@ class _InitImExViewState extends State<InitImExView> {
                     width: 200,
                     height: 40,
                     decoration: BoxDecoration(
-                        color:
-                        switchButton == 2 ? Colors.blue : Colors.grey,
+                        color: switchButton == 2 ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8)),
                     child: Center(
                       child: Text(
-                        "Xuất hàng".toUpperCase(),
+                        S.current.export.toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
+                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -151,7 +147,7 @@ class _InitImExViewState extends State<InitImExView> {
                                   children: [
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("STT"),
+                                      child: textHeader(S.current.stt),
                                     ),
                                     Expanded(
                                       flex: 2,
@@ -159,46 +155,48 @@ class _InitImExViewState extends State<InitImExView> {
                                     ),
                                     Expanded(
                                       flex: 3,
-                                      child: textHeader("SKU"),
+                                      child: textHeader(S.current.sku),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("QTY PLAN"),
+                                      child: textHeader(S.current.qty_plan),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("QTY ACTUAL"),
+                                      child: textHeader(S.current.qty_actual),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("ĐVT"),
+                                      child: textHeader(S.current.uoc),
                                     ),
                                     Expanded(
                                       flex: 2,
-                                      child: textHeader("LOCATION"),
+                                      child: textHeader(S.current.location),
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: textHeader("STATUS"),
-                                    ),Expanded(
-                                      flex: 2,
-                                      child: textHeader("PERFORMER"),
+                                      child: textHeader(S.current.status),
                                     ),
                                     Expanded(
                                       flex: 2,
-                                      child: textHeader("ACTUAL RECEIVE"),
+                                      child: textHeader(S.current.performer),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child:
+                                          textHeader(S.current.actual_receive),
                                     ),
                                   ],
                                 ),
                               ),
                               poCodeMode != null
                                   ? switchButton == 1
-                                  ? ReOrderAbleWidget(
-                                  data: ScreenArguments(arg1: poCodeMode)
-                              )
-                                  : ReOrderAbleExportWidget(
-                                  data: ScreenArguments(arg1: poCodeMode)
-                              )
+                                      ? ReOrderAbleWidget(
+                                          data:
+                                              ScreenArguments(arg1: poCodeMode))
+                                      : ReOrderAbleExportWidget(
+                                          data:
+                                              ScreenArguments(arg1: poCodeMode))
                                   : Center(child: CircularProgressIndicator()),
                             ],
                           ),
@@ -218,8 +216,8 @@ class _InitImExViewState extends State<InitImExView> {
   Widget textHeader(String title) {
     return Center(
         child: Text(
-          title,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ));
+      title,
+      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+    ));
   }
 }
